@@ -1,5 +1,6 @@
 Modifie php.ini : 
 
+
 [mail function]
 
 ; For Win32 only.
@@ -23,6 +24,7 @@ sendmail_path = "\"C:\xampp\sendmail\sendmail.exe\" -t"
 ----------------------------------------------------------------------
 
 Modifie sendmail.ini : 
+
 
 smtp_server=smtp.gmail.com
 
