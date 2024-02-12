@@ -19,6 +19,46 @@ if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);
 }
 
+$success_username = $success_email = $success_password = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['change_username'])) {
+        $new_username = $_POST['new_username'];
+        $sql = "UPDATE utilisateurs SET nom_utilisateur = ? WHERE id_utilisateur = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $new_username, $user_id);
+        if ($stmt->execute()) {
+            $success_username = "Nom d'utilisateur mis à jour avec succès.";
+        } else {
+            echo "Erreur lors de la mise à jour du nom d'utilisateur : " . $stmt->error;
+        }
+    }
+
+    if (isset($_POST['change_email'])) {
+        $new_email = $_POST['new_email'];
+        $sql = "UPDATE utilisateurs SET email = ? WHERE id_utilisateur = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $new_email, $user_id);
+        if ($stmt->execute()) {
+            $success_email = "Adresse e-mail mise à jour avec succès.";
+        } else {
+            echo "Erreur lors de la mise à jour de l'adresse e-mail : " . $stmt->error;
+        }
+    }
+
+    if (isset($_POST['change_password'])) {
+        $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+        $sql = "UPDATE utilisateurs SET mot_de_passe = ? WHERE id_utilisateur = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $new_password, $user_id);
+        if ($stmt->execute()) {
+            $success_password = "Mot de passe mis à jour avec succès.";
+        } else {
+            echo "Erreur lors de la mise à jour du mot de passe : " . $stmt->error;
+        }
+    }
+}
+
 $sql = "SELECT id_utilisateur, nom_utilisateur, email FROM utilisateurs WHERE id_utilisateur = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
@@ -37,6 +77,7 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +95,7 @@ $conn->close();
     <link rel="stylesheet" href="../css/product.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
-    <title>Pantalons</title>
+    <title>Profil</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -94,13 +135,49 @@ $conn->close();
         <h2>Profil de <?php echo $nom_utilisateur; ?></h2>
         <p><strong>ID Utilisateur:</strong> <?php echo $user_id; ?></p>
         <p><strong>Nom d'utilisateur:</strong> <?php echo $nom_utilisateur; ?></p>
-        <p><strong>Email:</strong> <?php echo $email; ?></p>
+        <p><strong>Email:</strong> <?php echo $email; ?></p><br><br>
+
+        <div class="mb-4">
+            <button class="btn btn-primary" onclick="showForm('usernameForm')">Changer le nom d'utilisateur</button>
+            <button class="btn btn-primary" onclick="showForm('emailForm')">Changer l'adresse e-mail</button>
+            <button class="btn btn-primary" onclick="showForm('passwordForm')">Changer le mot de passe</button>
+        </div>
+
+        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="usernameForm" style="display:none;">
+            <label for="new_username">Changer le nom d'utilisateur:</label>
+            <input type="text" name="new_username" id="new_username" required>
+            <button type="submit" name="change_username" class="btn btn-primary">Changer le nom d'utilisateur</button>
+        </form>
+        <?php if (!empty($success_username)) { echo "<p class='text-success'>$success_username</p>"; } ?>
+
+        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="emailForm" style="display:none;">
+            <label for="new_email">Changer l'adresse e-mail:</label>
+            <input type="email" name="new_email" id="new_email" required>
+            <button type="submit" name="change_email" class="btn btn-primary">Changer l'adresse e-mail</button>
+        </form>
+        <?php if (!empty($success_email)) { echo "<p class='text-success'>$success_email</p>"; } ?>
+
+        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="passwordForm" style="display:none;">
+            <label for="new_password">Changer le mot de passe:</label>
+            <input type="password" name="new_password" id="new_password" required>
+            <button type="submit" name="change_password" class="btn btn-primary">Changer le mot de passe</button>
+        </form>
+        <?php if (!empty($success_password)) { echo "<p class='text-success'>$success_password</p>"; } ?>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
     <footer>
         © 2023 Baayvin Site Web
     </footer>
+
+    <script>
+        function showForm(formId) {
+            document.getElementById('usernameForm').style.display = 'none';
+            document.getElementById('emailForm').style.display = 'none';
+            document.getElementById('passwordForm').style.display = 'none';
+
+            document.getElementById(formId).style.display = 'block';
+        }
+    </script>
 </body>
 </html>

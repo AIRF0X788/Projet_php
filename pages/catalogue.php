@@ -47,7 +47,7 @@
                     if (isset($_SESSION['user_id'])) {
                         echo '<a class="nav-link" href="deconnexion.php">Déconnexion</a>';
                     } else {
-                        echo '<a class="nav-link" href="connexion.php">Se connecter</a>';
+                        echo '<a class="nav-link" href="b.php">Se connecter</a>';
                     }
                     ?>
             </ul>
