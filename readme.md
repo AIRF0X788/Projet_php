@@ -1,4 +1,4 @@
-Modifie php.ini : 
+Modifie php.ini dans xampp : C:\xampp\php :
 
 
 [mail function]
@@ -23,7 +23,7 @@ sendmail_path = "\"C:\xampp\sendmail\sendmail.exe\" -t"
 
 ----------------------------------------------------------------------
 
-Modifie sendmail.ini : 
+Modifie sendmail.ini dans xampp : C:\xampp\sendmail : 
 
 
 smtp_server=smtp.gmail.com
