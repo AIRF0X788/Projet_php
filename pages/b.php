@@ -145,7 +145,23 @@ session_start();
                     $stmt->bind_param("s", $email_to_delete);
                     $stmt->execute();
 
-                    echo "Utilisateur supprimé avec succès!";
+                    $to = $email_to_delete;
+                    $subject = "Goodbye";
+                    $message = "Vous avez supprimé votre compte";
+                    $headers = "From: ynovmailoff@gmail.com";
+
+                    if(mail($to, $subject, $message, $headers)) {
+
+                        echo "Compte supprimé";
+
+                    }
+                    else {
+
+                        echo "le compte a pas été supprimé";
+                        
+                    }
+
+                    // echo "Utilisateur supprimé avec succès!";
                 } else if (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
@@ -177,7 +193,21 @@ session_start();
                     $user_id = $conn->insert_id;
                     $_SESSION['user_id'] = $user_id;
 
-                    echo "Utilisateur ajouté avec succès!";
+                    $to = $email;
+                    $subject = "Welcome $username";
+                    $message = "Merci d'avoir crée un compte sur notre site";
+                    $headers = "From: ynovmailoff@gmail.com";
+
+                    if(mail($to, $subject, $message, $headers)) {
+
+                        echo "Compte crée et mail envoyé";
+
+                    }
+                    else {
+
+                        echo "mail pas envoyé";
+                        
+                    }
                 }
             }
 
