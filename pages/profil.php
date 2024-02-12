@@ -121,7 +121,7 @@ $conn->close();
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./deconnexion.php">Déconnexion</a>
+                    <a class="nav-link" href="./pantalon.php">Déconnexion</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">

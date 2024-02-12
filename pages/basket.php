@@ -16,7 +16,7 @@ if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);
 }
 
-$sql = "SELECT id_basket, nom, description, prix, image_url FROM basket";
+$sql = "SELECT id_basket, nom, description, prix, image_url, category FROM basket";
 $result = $conn->query($sql);
 
 ?>
@@ -76,14 +76,24 @@ $result = $conn->query($sql);
         </div>
     </nav>
     <h2 class="text-center">Les Baskets</h2>
-
+    <div>
+                <label for="category-filter" class="categorytext">Filtrer les catégorie:</label>
+                <select id="category-filter" class="categoryselect">
+                    <option value="">Toutes les catégories</option>
+                    <option value="Enfant">Enfant</option>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                </select>
+                <button class="recherche" onclick="filterTopics()">Rechercher</button>
+            </div>  
     <?php
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            echo '<div class="card">';
+            echo '<div class="card topic-item">';
             echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
             echo '<div class="container">';
             echo '<h4><b>' . $row['nom'] . '</b></h4>';
+            echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
             echo '<a href="panier.php?id=' . $row['id_basket'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'];
@@ -94,6 +104,7 @@ $result = $conn->query($sql);
             echo '</div>';
             echo '</div>';
         }
+        
     } else {
         echo "Aucun résultat trouvé";
     }
@@ -104,6 +115,7 @@ $result = $conn->query($sql);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/filtre.js"></script>
     <footer>
         © 2023 Baayvin Site Web
     </footer>
