@@ -2,7 +2,7 @@
 session_start();
 
 if (empty($_SESSION['user_id'])) {
-    header("Location: b.php");
+    header("Location: login.php");
     exit();
 }
 

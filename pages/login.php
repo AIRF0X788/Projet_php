@@ -72,7 +72,7 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Ajouter un utilisateur</h5>
-                            <form method="post" action="./b.php">
+                            <form method="post" action="./login.php">
                                 <div class="form-group">
                                     <label for="username">Nom d'utilisateur :</label>
                                     <input type="text" id="username" name="username" class="form-control" required>
@@ -94,7 +94,7 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Supprimer un utilisateur</h5>
-                            <form method="post" action="./b.php">
+                            <form method="post" action="./login.php">
                                 <div class="form-group">
                                     <label for="email_to_delete">Email de l'utilisateur à supprimer :</label>
                                     <input type="email" id="email_to_delete" name="email_to_delete" class="form-control">
@@ -108,7 +108,7 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Se connecter</h5>
-                            <form method="post" action="./b.php">
+                            <form method="post" action="./login.php">
                                 <div class="form-group">
                                     <label for="login_username">Nom d'utilisateur :</label>
                                     <input type="text" id="login_username" name="login_username" class="form-control" required>
