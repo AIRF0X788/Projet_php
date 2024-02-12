@@ -72,7 +72,7 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Ajouter un utilisateur</h5>
-                            <form method="post" action="./b.php">
+                            <form method="post" action="./login.php">
                                 <div class="form-group">
                                     <label for="username">Nom d'utilisateur :</label>
                                     <input type="text" id="username" name="username" class="form-control" required>
@@ -94,7 +94,7 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Supprimer un utilisateur</h5>
-                            <form method="post" action="./b.php">
+                            <form method="post" action="./login.php">
                                 <div class="form-group">
                                     <label for="email_to_delete">Email de l'utilisateur à supprimer :</label>
                                     <input type="email" id="email_to_delete" name="email_to_delete" class="form-control">
@@ -108,7 +108,7 @@ session_start();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Se connecter</h5>
-                            <form method="post" action="./b.php">
+                            <form method="post" action="./login.php">
                                 <div class="form-group">
                                     <label for="login_username">Nom d'utilisateur :</label>
                                     <input type="text" id="login_username" name="login_username" class="form-control" required>
@@ -145,7 +145,23 @@ session_start();
                     $stmt->bind_param("s", $email_to_delete);
                     $stmt->execute();
 
-                    echo "Utilisateur supprimé avec succès!";
+                    $to = $email_to_delete;
+                    $subject = "Goodbye";
+                    $message = "Vous avez supprimé votre compte";
+                    $headers = "From: ynovmailoff@gmail.com";
+
+                    if(mail($to, $subject, $message, $headers)) {
+
+                        echo "Compte supprimé";
+
+                    }
+                    else {
+
+                        echo "le compte a pas été supprimé";
+                        
+                    }
+
+                    // echo "Utilisateur supprimé avec succès!";
                 } else if (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
@@ -177,7 +193,21 @@ session_start();
                     $user_id = $conn->insert_id;
                     $_SESSION['user_id'] = $user_id;
 
-                    echo "Utilisateur ajouté avec succès!";
+                    $to = $email;
+                    $subject = "Welcome $username";
+                    $message = "Merci d'avoir crée un compte sur notre site";
+                    $headers = "From: ynovmailoff@gmail.com";
+
+                    if(mail($to, $subject, $message, $headers)) {
+
+                        echo "Compte crée et mail envoyé";
+
+                    }
+                    else {
+
+                        echo "mail pas envoyé";
+                        
+                    }
                 }
             }
 

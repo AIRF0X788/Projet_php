@@ -55,7 +55,7 @@
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-            <a href="./b.php" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
+            <a href="./login.php" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
         </div>
     </nav>
     <h2 class="text-center">Les Nouveautés</h2>
