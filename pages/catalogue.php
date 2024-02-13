@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $connectButtonText = 'Se déconnecter';
-    $loginPage = './logout.php'; // Redirection vers logout.php pour la déconnexion
+    $loginPage = './logout.php'; 
 } else {
     $connectButtonText = 'Se connecter';
     $loginPage = './login.php';
