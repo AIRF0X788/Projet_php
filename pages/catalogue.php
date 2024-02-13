@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $connectButtonText = 'Se déconnecter';
+    $loginPage = './logout.php'; // Redirection vers logout.php pour la déconnexion
+} else {
+    $connectButtonText = 'Se connecter';
+    $loginPage = './login.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,13 +55,8 @@
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <li class="nav-item">
-                    <?php
-                    if (isset($_SESSION['user_id'])) {
-                        echo '<a class="nav-link" href="deconnexion.php">Déconnexion</a>';
-                    } else {
-                        echo '<a class="nav-link" href="b.php">Se connecter</a>';
-                    }
-                    ?>
+                    <a class="nav-link" href="<?php echo $loginPage; ?>"><?php echo $connectButtonText; ?></a>
+                </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">

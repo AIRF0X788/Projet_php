@@ -20,6 +20,8 @@ session_start();
     <link href="https://fonts.googleapis.com/css2?family=Fascinate+Inline&family=Rubik+Marker+Hatch&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="../css/connecion.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
     <title>Navbar and Cards</title>
 </head>
@@ -36,9 +38,6 @@ session_start();
                     <a class="nav-link" href="./catalogue.php">Accueil <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./deconnexion.php">Se Déconecter</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="./basket.php">Basket</a>
                 </li>
                 <li class="nav-item">
@@ -48,13 +47,7 @@ session_start();
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <li class="nav-item">
-                    <?php
-                    if (isset($_SESSION['user_id'])) {
-                        echo '<a class="nav-link" href="deconnexion.php">Déconnexion</a>';
-                    } else {
-                        echo '<a class="nav-link" href="connexion.php">Se connecter</a>';
-                    }
-                    ?>
+                    
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
@@ -161,7 +154,6 @@ session_start();
                         
                     }
 
-                    // echo "Utilisateur supprimé avec succès!";
                 } else if (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];

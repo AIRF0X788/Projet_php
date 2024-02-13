@@ -62,9 +62,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_panier'])) {
         foreach ($_SESSION['panier'] as $product) {
             $id_produit = $product['id'];
             $stmt = $conn->prepare("INSERT INTO commande_produits (id_commande, id_produit, prix) VALUES (?, ?, ?)");
-            $stmt->bind_param("id", $id_panier, $id_produit, $product['prix']);
+            $stmt->bind_param("idi", $id_panier, $id_produit, $product['prix']);
             $stmt->execute();
         }
+
+        $stmt = $conn->prepare("INSERT INTO paniers (id_utilisateur, prix) VALUES (?, ?)");
+$stmt->bind_param("id", $user_id, $total_panier);
+
+$total_panier = 0;
+foreach ($_SESSION['panier'] as $product) {
+    $total_panier += $product['prix'];
+}
+
+$stmt->execute();
+$id_panier = $conn->insert_id;
+
 
         $conn->close();
         $_SESSION['panier'] = [];
@@ -78,6 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_panier'])) {
 <html>
 <head>
     <title>Mon Panier</title>
+    <link rel="stylesheet" href="../css/panier.css">
+
 </head>
 <body>
     <h1>Mon Panier</h1>
@@ -117,6 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_panier'])) {
     } else {
         echo '<p class="empty-cart">Votre panier est vide.</p>';
     }
+
+    
     ?>
 
     <footer>
