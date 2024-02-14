@@ -3,8 +3,14 @@ session_start();
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
+    $connectButtonText = 'Se déconnecter';
+    $loginPage = './logout.php'; 
+    $panier_url = "./panier.php";
+} else {
+    $connectButtonText = 'Se connecter';
+    $loginPage = './login.php';
+    $panier_url = "./panier.php"; 
 }
-
 $servername = "localhost";
 $username = "root"; 
 $password = ""; 
@@ -18,7 +24,6 @@ if ($conn->connect_error) {
 
 $sql = "SELECT id_basket, nom, description, prix, image_url, category FROM basket";
 $result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -64,16 +69,25 @@ $result = $conn->query($sql);
                 <li class="nav-item">
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./login.php">Connexion</a>
-                </li>
-            </ul>
+                <?php
+            if (isset($_SESSION['user_id'])) {
+                echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
+            } else {
+                echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
+            }
+            ?>
+        </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-            <a href="#" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
-        </div>
+            <?php
+if (isset($_SESSION['user_id'])) {
+    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
+} else {
+    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
+}
+?>
     </nav>
     <h2 class="text-center">Les Baskets</h2>
     <div>
@@ -86,7 +100,7 @@ $result = $conn->query($sql);
                 </select>
                 <button class="recherche" onclick="filterTopics()">Rechercher</button>
             </div>  
-    <?php
+            <?php
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             echo '<div class="card topic-item">';
@@ -110,7 +124,8 @@ $result = $conn->query($sql);
     }
 
     $conn->close();
-    ?>
+?>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

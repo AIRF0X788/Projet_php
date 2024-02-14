@@ -5,9 +5,11 @@ if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $connectButtonText = 'Se déconnecter';
     $loginPage = './logout.php'; 
+    $panier_url = "./panier.php";
 } else {
     $connectButtonText = 'Se connecter';
     $loginPage = './login.php';
+    $panier_url = "./panier.php"; 
 }
 ?>
 <!DOCTYPE html>
@@ -62,8 +64,13 @@ if (isset($_SESSION['user_id'])) {
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-            <a href="./login.php" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
-        </div>
+            <?php
+if (isset($_SESSION['user_id'])) {
+    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
+} else {
+    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
+}
+?>
     </nav>
     <h2 class="text-center">Les Nouveautés</h2>
 
@@ -90,14 +97,17 @@ if (isset($_SESSION['user_id'])) {
         echo '<h4><b>' . $row['nom'] . '</b></h4>';
         echo '<p>' . $row['description'] . '</p>';
         echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
-        echo '<a href="panier.php?id=' . $row['id_produit'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'];
+    
         if (isset($user_id)) {
-            echo '&user_id=' . $user_id;
+            echo '<a href="panier.php?id=' . $row['id_produit'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+        } else {
+            echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
         }
-        echo '" class="btn btn-success">Ajouter au Panier</a>';
+    
         echo '</div>';
         echo '</div>';
     }
+    
 
     $conn->close();
     ?>
