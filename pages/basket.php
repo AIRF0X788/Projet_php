@@ -4,16 +4,16 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $connectButtonText = 'Se déconnecter';
-    $loginPage = './logout.php'; 
+    $loginPage = './logout.php';
     $panier_url = "./panier.php";
 } else {
     $connectButtonText = 'Se connecter';
     $loginPage = './login.php';
-    $panier_url = "./panier.php"; 
+    $panier_url = "./panier.php";
 }
 $servername = "localhost";
-$username = "root"; 
-$password = ""; 
+$username = "root";
+$password = "";
 $database = "dbphp";
 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -28,6 +28,7 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,8 +45,9 @@ $result = $conn->query($sql);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
-    <title>Pantalons</title>
+    <title>Basket</title>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Baayvin</a>
@@ -70,61 +72,72 @@ $result = $conn->query($sql);
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <?php
-            if (isset($_SESSION['user_id'])) {
-                echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
-            } else {
-                echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
-            }
-            ?>
-        </ul>
+                if (isset($_SESSION['user_id'])) {
+                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
+                } else {
+                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
+                }
+                ?>
+            </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <?php
-if (isset($_SESSION['user_id'])) {
-    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
-} else {
-    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
-}
-?>
+            if (isset($_SESSION['user_id'])) {
+                echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
+            } else {
+                echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
+            }
+            ?>
     </nav>
     <h2 class="text-center">Les Baskets</h2>
     <div>
-                <label for="category-filter" class="categorytext">Filtrer les catégorie:</label>
-                <select id="category-filter" class="categoryselect">
-                    <option value="">Toutes les catégories</option>
-                    <option value="Enfant">Enfant</option>
-                    <option value="Homme">Homme</option>
-                    <option value="Femme">Femme</option>
-                </select>
-                <button class="recherche" onclick="filterTopics()">Rechercher</button>
-            </div>  
-            <?php
+        <label for="category-filter" class="categorytext">Filtrer les catégorie:</label>
+        <select id="category-filter" class="categoryselect">
+            <option value="">Toutes les catégories</option>
+            <option value="Enfant">Enfant</option>
+            <option value="Homme">Homme</option>
+            <option value="Femme">Femme</option>
+        </select>
+        <button class="recherche" onclick="filterTopics()">Rechercher</button>
+    </div>
+    <?php
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            echo '<div class="card topic-item">';
+            echo '<div class="card">';
             echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
             echo '<div class="container">';
             echo '<h4><b>' . $row['nom'] . '</b></h4>';
-            echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
-            echo '<a href="panier.php?id=' . $row['id_basket'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'];
+
             if (isset($user_id)) {
-                echo '&user_id=' . $user_id;
+                $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
+                $stmt_user = $conn->prepare($sql_user);
+                $stmt_user->bind_param("i", $user_id);
+                $stmt_user->execute();
+                $result_user = $stmt_user->get_result();
+                $user = $result_user->fetch_assoc();
+
+                if ($user['statut'] == 'actif') {
+                    echo '<a href="panier.php?id=' . $row['id_basket'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                } else {
+                    echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
+                }
+            } else {
+                echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
             }
-            echo '" class="btn btn-success">Ajouter au Panier</a>';
+
             echo '</div>';
             echo '</div>';
         }
-        
     } else {
         echo "Aucun résultat trouvé";
     }
 
     $conn->close();
-?>
+    ?>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -135,4 +148,5 @@ if (isset($_SESSION['user_id'])) {
         © 2023 Baayvin Site Web
     </footer>
 </body>
+
 </html>

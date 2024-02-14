@@ -177,17 +177,21 @@ session_start();
                     $email = $_POST['email'];
                     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-                    $sql = "INSERT INTO utilisateurs (nom_utilisateur, email, mot_de_passe) VALUES (?, ?, ?)";
+                    $activation_token = bin2hex(random_bytes(32));
+
+                    $sql = "INSERT INTO utilisateurs (nom_utilisateur, email, mot_de_passe, activation_token) VALUES (?, ?, ?, ?)";
                     $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("sss", $username, $email, $password);
+                    $stmt->bind_param("ssss", $username, $email, $password, $activation_token);
                     $stmt->execute();
 
                     $user_id = $conn->insert_id;
                     $_SESSION['user_id'] = $user_id;
 
+                    $activation_link = "http://localhost/xampp/vrai%20php/pages/activer_compte.php?token=" . $activation_token;
+
                     $to = $email;
-                    $subject = "Welcome $username";
-                    $message = "Merci d'avoir crée un compte sur notre site";
+                    $subject = "Bienvenue sur Projet-Php.com";
+                    $message = "Bonjour $username,\n\nMerci d'avoir créé un compte sur notre site. Cliquez sur le lien suivant pour activer votre compte :\n$activation_link\n\nCordialement";
                     $headers = "From: ynovmailoff@gmail.com";
 
                     if(mail($to, $subject, $message, $headers)) {

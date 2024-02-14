@@ -103,18 +103,30 @@ if (isset($_SESSION['user_id'])) {
             <?php
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            echo '<div class="card topic-item">';
+            echo '<div class="card">';
             echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
             echo '<div class="container">';
             echo '<h4><b>' . $row['nom'] . '</b></h4>';
-            echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
-            echo '<a href="panier.php?id=' . $row['id_veste'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'];
+
             if (isset($user_id)) {
-                echo '&user_id=' . $user_id;
+                $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
+                $stmt_user = $conn->prepare($sql_user);
+                $stmt_user->bind_param("i", $user_id);
+                $stmt_user->execute();
+                $result_user = $stmt_user->get_result();
+                $user = $result_user->fetch_assoc();
+
+                if ($user['statut'] == 'actif') {
+                    echo '<a href="panier.php?id=' . $row['id_veste'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                } else {
+                    echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
+                }
+            } else {
+                echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
             }
-            echo '" class="btn btn-success">Ajouter au Panier</a>';
+
             echo '</div>';
             echo '</div>';
         }
