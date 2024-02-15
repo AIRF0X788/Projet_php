@@ -3,7 +3,7 @@ session_start();
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    $connectButtonText = 'Se déconnecter';
+    $connectButtonText = 'Se Déconnecter';
     $loginPage = './logout.php';
     $panier_url = "./panier.php";
 } else {

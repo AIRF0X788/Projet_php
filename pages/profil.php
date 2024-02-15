@@ -9,8 +9,8 @@ if (empty($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 $servername = "localhost";
-$username = "root"; 
-$password = ""; 
+$username = "root";
+$password = "";
 $database = "dbphp";
 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -80,6 +80,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,6 +98,7 @@ $conn->close();
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
     <title>Profil</title>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Baayvin</a>
@@ -120,9 +122,13 @@ $conn->close();
                 <li class="nav-item">
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./pantalon.php">Déconnexion</a>
-                </li>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
+                } else {
+                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
+                }
+                ?>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
@@ -148,21 +154,27 @@ $conn->close();
             <input type="text" name="new_username" id="new_username" required>
             <button type="submit" name="change_username" class="btn btn-primary">Changer le nom d'utilisateur</button>
         </form>
-        <?php if (!empty($success_username)) { echo "<p class='text-success'>$success_username</p>"; } ?>
+        <?php if (!empty($success_username)) {
+            echo "<p class='text-success'>$success_username</p>";
+        } ?>
 
         <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="emailForm" style="display:none;">
             <label for="new_email">Changer l'adresse e-mail:</label>
             <input type="email" name="new_email" id="new_email" required>
             <button type="submit" name="change_email" class="btn btn-primary">Changer l'adresse e-mail</button>
         </form>
-        <?php if (!empty($success_email)) { echo "<p class='text-success'>$success_email</p>"; } ?>
+        <?php if (!empty($success_email)) {
+            echo "<p class='text-success'>$success_email</p>";
+        } ?>
 
         <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="passwordForm" style="display:none;">
             <label for="new_password">Changer le mot de passe:</label>
             <input type="password" name="new_password" id="new_password" required>
             <button type="submit" name="change_password" class="btn btn-primary">Changer le mot de passe</button>
         </form>
-        <?php if (!empty($success_password)) { echo "<p class='text-success'>$success_password</p>"; } ?>
+        <?php if (!empty($success_password)) {
+            echo "<p class='text-success'>$success_password</p>";
+        } ?>
     </div>
 
 
@@ -180,4 +192,5 @@ $conn->close();
         }
     </script>
 </body>
+
 </html>

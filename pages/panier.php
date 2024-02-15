@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['supprimer'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_panier'])) {
     if (isset($_SESSION['panier']) && count($_SESSION['panier']) > 0) {
         $servername = "localhost";
-        $username = "root"; 
-        $password = ""; 
+        $username = "root";
+        $password = "";
         $database = "dbphp";
         $conn = new mysqli($servername, $username, $password, $database);
 
@@ -68,15 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_panier'])) {
         }
 
         $stmt = $conn->prepare("INSERT INTO paniers (id_utilisateur, prix) VALUES (?, ?)");
-$stmt->bind_param("id", $user_id, $total_panier);
+        $stmt->bind_param("id", $user_id, $total_panier);
 
-$total_panier = 0;
-foreach ($_SESSION['panier'] as $product) {
-    $total_panier += $product['prix'];
-}
+        $total_panier = 0;
+        foreach ($_SESSION['panier'] as $product) {
+            $total_panier += $product['prix'];
+        }
 
-$stmt->execute();
-$id_panier = $conn->insert_id;
+        $stmt->execute();
+        $id_panier = $conn->insert_id;
 
 
         $conn->close();
@@ -90,11 +90,13 @@ $id_panier = $conn->insert_id;
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Mon Panier</title>
     <link rel="stylesheet" href="../css/panier.css">
 
 </head>
+
 <body>
     <h1>Mon Panier</h1>
 
@@ -134,16 +136,17 @@ $id_panier = $conn->insert_id;
         echo '<p class="empty-cart">Votre panier est vide.</p>';
     }
 
-    
+
     ?>
 
-<form method="post" action="panier.php">
-    <input type="text" name="code_promo" placeholder="Entrez votre code promo">
-    <input type="submit" name="appliquer_code_promo" value="Appliquer">
-</form>
+    <form method="post" action="panier.php">
+        <input type="text" name="code_promo" placeholder="Entrez votre code promo">
+        <input type="submit" name="appliquer_code_promo" value="Appliquer">
+    </form>
 
     <footer>
         © 2023 TIBAY Site Web
     </footer>
 </body>
+
 </html>

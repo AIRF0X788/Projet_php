@@ -1,86 +1,86 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  padding: 20px;
 }
 
 .commande-header {
-    text-align: center;
-    color: #333;
+  text-align: center;
+  color: #333;
 }
 
 .commande-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .commande-item {
-    background-color: #fff;
-    padding: 20px;
-    margin: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 30%;
-    text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  margin: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 30%;
+  text-align: center;
 }
 
 .total {
-    text-align: right;
-    margin-top: 20px;
-    font-size: 18px;
+  text-align: right;
+  margin-top: 20px;
+  font-size: 18px;
 }
 
 h2 {
-    color: #333;
+  color: #333;
 }
 
 form {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
 }
 
 input[type="submit"] {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 input[type="submit"]:hover {
-    background-color: #45a049;
+  background-color: #45a049;
 }
 
 .btn {
-    display: block;
-    width: 150px;
-    margin-top: 20px;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    text-decoration: none;
+  display: block;
+  width: 150px;
+  margin-top: 20px;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  text-decoration: none;
 }
 
 .btn:hover {
-    background-color: #555;
+  background-color: #555;
 }
 
 footer {
-    background-color: black;
-    color: beige;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+  background-color: black;
+  color: beige;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }

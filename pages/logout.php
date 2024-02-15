@@ -6,4 +6,3 @@ session_destroy();
 
 header("Location: ./catalogue.php");
 exit();
-?>

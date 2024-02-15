@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Commande</title>
 </head>
+
 <body>
     <h1 class="commande-header">Adresse de Livraison</h1>
 
@@ -11,10 +13,10 @@
 
     if (isset($_GET['id_panier'])) {
         $id_panier = $_GET['id_panier'];
-        
+
         $servername = "localhost";
-        $username = "root"; 
-        $password = ""; 
+        $username = "root";
+        $password = "";
         $database = "dbphp";
 
         $conn = new mysqli($servername, $username, $password, $database);
@@ -43,7 +45,7 @@
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
             echo '</div>';
 
-            $total += $row['prix']; 
+            $total += $row['prix'];
         }
 
         echo '</div>';
@@ -99,4 +101,5 @@
         © 2023 TIBAY Site Web
     </footer>
 </body>
+
 </html>

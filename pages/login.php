@@ -47,7 +47,7 @@ session_start();
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <li class="nav-item">
-                    
+
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
@@ -143,17 +143,13 @@ session_start();
                     $message = "Vous avez supprimé votre compte";
                     $headers = "From: ynovmailoff@gmail.com";
 
-                    if(mail($to, $subject, $message, $headers)) {
+                    if (mail($to, $subject, $message, $headers)) {
 
                         echo "Compte supprimé";
-
-                    }
-                    else {
+                    } else {
 
                         echo "le compte a pas été supprimé";
-                        
                     }
-
                 } else if (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
@@ -194,15 +190,12 @@ session_start();
                     $message = "Bonjour $username,\n\nMerci d'avoir créé un compte sur notre site. Cliquez sur le lien suivant pour activer votre compte :\n$activation_link\n\nCordialement";
                     $headers = "From: ynovmailoff@gmail.com";
 
-                    if(mail($to, $subject, $message, $headers)) {
+                    if (mail($to, $subject, $message, $headers)) {
 
                         echo "Compte crée et mail envoyé";
-
-                    }
-                    else {
+                    } else {
 
                         echo "mail pas envoyé";
-                        
                     }
                 }
             }
@@ -231,4 +224,5 @@ session_start();
                 });
             </script>
     </body>
+
 </html>

@@ -4,17 +4,17 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $connectButtonText = 'Se déconnecter';
-    $loginPage = './logout.php'; 
+    $loginPage = './logout.php';
     $panier_url = "./panier.php";
 } else {
     $connectButtonText = 'Se connecter';
     $loginPage = './login.php';
-    $panier_url = "./panier.php"; 
+    $panier_url = "./panier.php";
 }
 
 $servername = "localhost";
-$username = "root"; 
-$password = ""; 
+$username = "root";
+$password = "";
 $database = "dbphp";
 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -34,6 +34,7 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,6 +53,7 @@ $result = $conn->query($sql);
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
     <title>Pantalons</title>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Baayvin</a>
@@ -76,38 +78,38 @@ $result = $conn->query($sql);
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <?php
-            if (isset($_SESSION['user_id'])) {
-                echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
-            } else {
-                echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
-            }
-            ?>
-        </ul>
+                if (isset($_SESSION['user_id'])) {
+                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
+                } else {
+                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
+                }
+                ?>
+            </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <?php
-if (isset($_SESSION['user_id'])) {
-    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
-} else {
-    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
-}
-?>
+            if (isset($_SESSION['user_id'])) {
+                echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
+            } else {
+                echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
+            }
+            ?>
     </nav>
     <h2 class="text-center">Les Pantalons</h2>
     <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <label for="category-filter">Filtrer par catégorie :</label>
-            <select id="category-filter" name="category">
-                <option value="">Toutes les catégories</option>
-                <option value="Enfant">Enfant</option>
-                <option value="Homme">Homme</option>
-                <option value="Femme">Femme</option>
-            </select>
-            <button type="submit">Filtrer</button>
-        </form> 
+        <label for="category-filter">Filtrer par catégorie :</label>
+        <select id="category-filter" name="category">
+            <option value="">Toutes les catégories</option>
+            <option value="Enfant">Enfant</option>
+            <option value="Homme">Homme</option>
+            <option value="Femme">Femme</option>
+        </select>
+        <button type="submit">Filtrer</button>
+    </form>
 
-            <?php
+    <?php
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             echo '<div class="card">';
@@ -144,7 +146,7 @@ if (isset($_SESSION['user_id'])) {
     }
 
     $conn->close();
-?>
+    ?>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -154,4 +156,5 @@ if (isset($_SESSION['user_id'])) {
         © 2023 Baayvin Site Web
     </footer>
 </body>
+
 </html>
