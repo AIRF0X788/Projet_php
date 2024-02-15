@@ -76,6 +76,15 @@ CREATE TABLE codes_promo (
     code VARCHAR(50) NOT NULL,
     valeur DECIMAL(5, 2) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS demandes_contact (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    sujet VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);

@@ -38,7 +38,7 @@ if (isset($_SESSION['user_id'])) {
 
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Baayvin</a>
+            <a class="navbar-brand" href="#">PHP</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -153,7 +153,8 @@ if (isset($_SESSION['user_id'])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <footer>
-            © 2023 Baayvin Site Web
+            © 2023 PHP Site Web
+            <a href="contact.php" class="btn btn-primary">Nous contacter</a>
         </footer>
     </body>
 

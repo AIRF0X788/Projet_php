@@ -98,7 +98,8 @@
 
     <a class="btn" href="./catalogue.php">Retourner au Catalogue</a>
     <footer>
-        © 2023 TIBAY Site Web
+        © 2023 PHP Site Web
+        <a href="contact.php" class="btn btn-primary">Nous contacter</a>
     </footer>
 </body>
 
