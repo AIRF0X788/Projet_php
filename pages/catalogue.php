@@ -76,17 +76,16 @@ if (isset($_SESSION['user_id'])) {
                 ?>
         </nav>
         <h2 class="text-center">Les Nouveautés</h2>
-
-        <div>
-                <label for="category-filter" class="categorytext">Filtrer les catégorie:</label>
-                <select id="category-filter" class="categoryselect">
-                    <option value="">Toutes les catégories</option>
-                    <option value="Enfant">Enfant</option>
-                    <option value="Homme">Homme</option>
-                    <option value="Femme">Femme</option>
-                </select>
-                <button class="recherche" onclick="filterTopics()">Rechercher</button>
-            </div>
+        <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <label for="category-filter">Filtrer par catégorie :</label>
+            <select id="category-filter" name="category">
+                <option value="">Toutes les catégories</option>
+                <option value="Enfant">Enfant</option>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+            </select>
+            <button type="submit">Filtrer</button>
+        </form>
 
         <?php
         $servername = "localhost";
@@ -100,7 +99,17 @@ if (isset($_SESSION['user_id'])) {
             die("La connexion à la base de données a échoué : " . $conn->connect_error);
         }
 
-        $stmt = $conn->prepare("SELECT id_produit, nom, description, prix, image_url, category FROM produits");
+        $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
+
+        $sql = "SELECT id_produit, nom, description, prix, image_url, category FROM produits";
+        if (!empty($filter_category)) {
+            $sql .= " WHERE category = ?";
+        }
+
+        $stmt = $conn->prepare($sql);
+        if (!empty($filter_category)) {
+            $stmt->bind_param("s", $filter_category);
+        }
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -143,7 +152,6 @@ if (isset($_SESSION['user_id'])) {
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script src="../js/filtre.js"></script>
         <footer>
             © 2023 Baayvin Site Web
         </footer>

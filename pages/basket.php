@@ -22,7 +22,12 @@ if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);
 }
 
+$filter_category = isset($_GET['category']) ? $_GET['category'] : '';
+
 $sql = "SELECT id_basket, nom, description, prix, image_url, category FROM basket";
+if (!empty($filter_category)) {
+    $sql .= " WHERE category = '$filter_category'";
+}
 $result = $conn->query($sql);
 ?>
 
@@ -92,16 +97,16 @@ $result = $conn->query($sql);
             ?>
     </nav>
     <h2 class="text-center">Les Baskets</h2>
-    <div>
-        <label for="category-filter" class="categorytext">Filtrer les catégorie:</label>
-        <select id="category-filter" class="categoryselect">
-            <option value="">Toutes les catégories</option>
-            <option value="Enfant">Enfant</option>
-            <option value="Homme">Homme</option>
-            <option value="Femme">Femme</option>
-        </select>
-        <button class="recherche" onclick="filterTopics()">Rechercher</button>
-    </div>
+    <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <label for="category-filter">Filtrer par catégorie :</label>
+            <select id="category-filter" name="category">
+                <option value="">Toutes les catégories</option>
+                <option value="Enfant">Enfant</option>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+            </select>
+            <button type="submit">Filtrer</button>
+        </form>
     <?php
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -146,7 +151,6 @@ $result = $conn->query($sql);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="../js/filtre.js"></script>
     <footer>
         © 2023 Baayvin Site Web
     </footer>
