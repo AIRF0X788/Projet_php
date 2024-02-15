@@ -77,6 +77,17 @@ if (isset($_SESSION['user_id'])) {
         </nav>
         <h2 class="text-center">Les Nouveautés</h2>
 
+        <div>
+                <label for="category-filter" class="categorytext">Filtrer les catégorie:</label>
+                <select id="category-filter" class="categoryselect">
+                    <option value="">Toutes les catégories</option>
+                    <option value="Enfant">Enfant</option>
+                    <option value="Homme">Homme</option>
+                    <option value="Femme">Femme</option>
+                </select>
+                <button class="recherche" onclick="filterTopics()">Rechercher</button>
+            </div>
+
         <?php
         $servername = "localhost";
         $username = "root";
@@ -89,7 +100,7 @@ if (isset($_SESSION['user_id'])) {
             die("La connexion à la base de données a échoué : " . $conn->connect_error);
         }
 
-        $stmt = $conn->prepare("SELECT id_produit, nom, description, prix, image_url FROM produits");
+        $stmt = $conn->prepare("SELECT id_produit, nom, description, prix, image_url, category FROM produits");
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -98,8 +109,10 @@ if (isset($_SESSION['user_id'])) {
             echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
             echo '<div class="container">';
             echo '<h4><b>' . $row['nom'] . '</b></h4>';
+            echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
+            echo '<a href="product_catalogue.php?id=' . $row['id_produit'] . '" class="btn btn-primary">Voir Détails</a>';
 
             if (isset($user_id)) {
                 $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
@@ -130,6 +143,7 @@ if (isset($_SESSION['user_id'])) {
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="../js/filtre.js"></script>
         <footer>
             © 2023 Baayvin Site Web
         </footer>

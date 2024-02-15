@@ -109,9 +109,11 @@ $result = $conn->query($sql);
             echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
             echo '<div class="container">';
             echo '<h4><b>' . $row['nom'] . '</b></h4>';
+            echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
-
+            echo '<a href="product_basket.php?id=' . $row['id_basket'] . '" class="btn btn-primary">Voir Détails</a>';
+    
             if (isset($user_id)) {
                 $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
                 $stmt_user = $conn->prepare($sql_user);
@@ -119,7 +121,7 @@ $result = $conn->query($sql);
                 $stmt_user->execute();
                 $result_user = $stmt_user->get_result();
                 $user = $result_user->fetch_assoc();
-
+    
                 if ($user['statut'] == 'actif') {
                     echo '<a href="panier.php?id=' . $row['id_basket'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
                 } else {
@@ -128,13 +130,14 @@ $result = $conn->query($sql);
             } else {
                 echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
             }
-
+    
             echo '</div>';
             echo '</div>';
         }
     } else {
         echo "Aucun résultat trouvé";
     }
+    
 
     $conn->close();
     ?>

@@ -109,8 +109,10 @@ if (isset($_SESSION['user_id'])) {
             echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
             echo '<div class="container">';
             echo '<h4><b>' . $row['nom'] . '</b></h4>';
+            echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
+            echo '<a href="product_pantalon.php?id=' . $row['id_pantalon'] . '" class="btn btn-primary">Voir Détails</a>';
 
             if (isset($user_id)) {
                 $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
