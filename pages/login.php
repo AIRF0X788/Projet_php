@@ -129,6 +129,20 @@ session_start();
                 die("La connexion à la base de données a échoué : " . $conn->connect_error);
             }
 
+            $sql_check_admin = "SELECT id_utilisateur FROM utilisateurs WHERE nom_utilisateur = 'admin' AND est_admin = 1";
+            $result_check_admin = $conn->query($sql_check_admin);
+
+            if ($result_check_admin->num_rows === 0) {
+                $admin_username = 'admin';
+                $admin_email = 'admin@admin.com';
+                $admin_password = password_hash('1234', PASSWORD_DEFAULT);
+
+                $sql = "INSERT INTO utilisateurs (nom_utilisateur, email, mot_de_passe, est_admin) VALUES (?, ?, ?, 1)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("sss", $admin_username, $admin_email, $admin_password);
+                $stmt->execute();
+            }
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (isset($_POST['delete_user'])) {
                     $email_to_delete = $_POST['email_to_delete'];
@@ -163,8 +177,14 @@ session_start();
 
                     if ($row && password_verify($login_password, $row['mot_de_passe'])) {
                         $_SESSION['user_id'] = $row['id_utilisateur'];
+                        if ($row['est_admin'] == 1) {
+                            $_SESSION['est_admin'] = true;
+                        } else {
+                            $_SESSION['est_admin'] = false;
+                        }
                         header('Location: catalogue.php');
                         exit;
+                                        
                     } else {
                         echo "Nom d'utilisateur ou mot de passe incorrect.";
                     }
