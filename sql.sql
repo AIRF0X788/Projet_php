@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
     email VARCHAR(100) NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
     statut VARCHAR(10) NOT NULL DEFAULT 'inactif',
-    activation_token VARCHAR(255) DEFAULT NULL
+    activation_token VARCHAR(255) DEFAULT NULL,
+    isAdmin BOOLEAN NOT NULL DEFAULT 0;
 );
 CREATE TABLE IF NOT EXISTS adresses (
     id_adresse INT AUTO_INCREMENT PRIMARY KEY,
@@ -76,7 +77,6 @@ CREATE TABLE codes_promo (
     code VARCHAR(50) NOT NULL,
     valeur DECIMAL(5, 2) NOT NULL
 );
-
 CREATE TABLE IF NOT EXISTS demandes_contact (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
@@ -84,7 +84,6 @@ CREATE TABLE IF NOT EXISTS demandes_contact (
     message TEXT NOT NULL,
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
@@ -92,6 +91,14 @@ CREATE INDEX IF NOT EXISTS idx_utilisateur_panier ON paniers (id_utilisateur);
 CREATE INDEX IF NOT EXISTS idx_utilisateur_commande ON commandes (id_utilisateur);
 INSERT INTO codes_promo (code, valeur)
 VALUES ('TOM', -10.00);
+INSERT INTO utilisateurs (nom_utilisateur, email, mot_de_passe, statut,isAdmin)
+VALUES (
+        'admin',
+        'admin@admin.com',
+        'admin',
+        'actif',
+        1
+    );
 INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
         'Produit1',

@@ -79,9 +79,13 @@ $result = $conn->query($sql);
                 <?php
                 if (isset($_SESSION['user_id'])) {
                     echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
+                    if ($_SESSION['isAdmin'] == 1) {
+                        echo '<li class="nav-item"><a class="nav-link" href="./admin_panel.php">Panneau Admin</a></li>';
+                    }
                 } else {
                     echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
                 }
+                
                 ?>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
