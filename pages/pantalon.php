@@ -96,6 +96,20 @@ $result = $conn->query($sql);
                 echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
             }
             ?>
+            <?php
+            if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+                $user_id = $_SESSION['user_id'];
+                $sql_check_admin = "SELECT est_admin FROM utilisateurs WHERE id_utilisateur = ? AND est_admin = 1";
+                $stmt_check_admin = $conn->prepare($sql_check_admin);
+                $stmt_check_admin->bind_param("i", $user_id);
+                $stmt_check_admin->execute();
+                $result_check_admin = $stmt_check_admin->get_result();
+
+                if ($result_check_admin->num_rows > 0) {
+                    echo '<a href="./admin.php" class="btn btn-success ml-2">Admin</a>';
+                }
+            }
+            ?>
     </nav>
     <h2 class="text-center">Les Pantalons</h2>
     <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">

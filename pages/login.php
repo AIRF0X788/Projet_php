@@ -164,29 +164,30 @@ session_start();
 
                         echo "le compte a pas été supprimé";
                     }
-                } else if (isset($_POST['login'])) {
+                } elseif (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
-                
-                    if ($login_username === "admin" && $login_password === "admin") {
-                        header('Location: admin.php');
-                        exit;
-                    }
-                
-                    $sql = "SELECT id_utilisateur, mot_de_passe FROM utilisateurs WHERE nom_utilisateur = ?";
+                    
+                    $sql = "SELECT id_utilisateur, mot_de_passe, est_admin FROM utilisateurs WHERE nom_utilisateur = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("s", $login_username);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $row = $result->fetch_assoc();
-                
+                    
                     if ($row && password_verify($login_password, $row['mot_de_passe'])) {
-                        $_SESSION['user_id'] = $row['id_utilisateur'];
-                        header('Location: catalogue.php');
-                        exit;
+                        if ($row['est_admin'] == 1) {
+                            $_SESSION['user_id'] = $row['id_utilisateur'];
+                            header('Location: admin.php');
+                            exit;
+                        } else {
+                            $_SESSION['user_id'] = $row['id_utilisateur'];
+                            header('Location: catalogue.php');
+                            exit;
+                        }
                     } else {
                         echo "Nom d'utilisateur ou mot de passe incorrect.";
-                    }
+                    }                
                 } else {
                     $username = $_POST['username'];
                     $email = $_POST['email'];
