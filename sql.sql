@@ -90,6 +90,13 @@ CREATE TABLE IF NOT EXISTS demandes_contact (
     message TEXT NOT NULL,
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS wishlist (
+    id_wishlist INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    id_produit INT NOT NULL,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_produit) REFERENCES produits(id_produit)
+);
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
