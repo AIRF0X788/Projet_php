@@ -10,7 +10,6 @@ use PayPal\Rest\ApiContext;
 $clientId = 'AbaeH59hs8nIOe7i4gE8kMfEg_cWHO2mfKDLA8jnA-8yXuMU-N1aBgnDo0BRY6q4I_QEQK6O9gZDPJjm';
 $clientSecret = 'ENeNXq0_hoNEMYyCXGG09kIu89pYgGrjhIDotGGZfj4LdiCrmE-FbOuZijOGxWVarNSWnUvlk-Yk71ol';
 
-// Configurer le contexte API PayPal
 $apiContext = new ApiContext(
     new OAuthTokenCredential($clientId, $clientSecret)
 );
