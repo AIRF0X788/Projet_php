@@ -45,19 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo "Le produit avec l'ID $product_id a été supprimé avec succès de la catégorie $selected_category.";
     } elseif (isset($_POST['delete_user'])) {
-        $user_email = $_POST['user_email'];
+        $user_id = $_POST['user_id'];
 
-        $sql = "DELETE FROM utilisateurs WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $user_email);
-        $stmt->execute();
+        $sql_delete_paniers = "DELETE FROM paniers WHERE id_utilisateur = ?";
+        $stmt_delete_paniers = $conn->prepare($sql_delete_paniers);
+        $stmt_delete_paniers->bind_param("i", $user_id);
+        $stmt_delete_paniers->execute();
 
-        echo "L'utilisateur avec l'email $user_email a été supprimé avec succès.";
+        $sql_delete_user = "DELETE FROM utilisateurs WHERE id_utilisateur = ?";
+        $stmt_delete_user = $conn->prepare($sql_delete_user);
+        $stmt_delete_user->bind_param("i", $user_id);
+        $stmt_delete_user->execute();
+
+        echo "L'utilisateur avec l'ID $user_id a été supprimé avec succès.";
     }
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -76,13 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="../css/product.css">
-
     <title>Admin Page</title>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Baayvin</a>
+        <a class="navbar-brand" href="#">PHP</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -101,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a class="nav-link" href="./pantalon.php">Pantalon</a>
                 </li>
                 <li class="nav-item">
-                    
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
@@ -109,11 +110,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
             <a href="./panier.php" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
+            <?php
+            if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+                $user_id = $_SESSION['user_id'];
+                $sql_check_admin = "SELECT est_admin FROM utilisateurs WHERE id_utilisateur = ? AND est_admin = 1";
+                $stmt_check_admin = $conn->prepare($sql_check_admin);
+                $stmt_check_admin->bind_param("i", $user_id);
+                $stmt_check_admin->execute();
+                $result_check_admin = $stmt_check_admin->get_result();
+
+                if ($result_check_admin->num_rows > 0) {
+                    echo '<a href="./admin.php" class="btn btn-success ml-2">Admin</a>';
+                }
+            }
+            ?>
         </div>
     </nav>
+
     <div class="container mt-5">
         <h2>Bienvenue sur la page d'administration</h2>
-
         <form method="post" action="admin.php">
             <h4>Choisir la page</h4>
             <div class="form-group">
@@ -129,15 +144,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <br>
         <br>
         <form method="post" action="admin.php">
-                <h4>Supprimer un compte utilisateur</h4>
-                <div class="form-group">
-                    <label for="user_email">Email de l'utilisateur :</label>
-                    <input type="email" id="user_email" name="user_email" class="form-control" required>
-                </div>
-                <button type="submit" name="delete_user" class="btn btn-danger">Supprimer le compte utilisateur</button>
-            </form>
+            <h4>Supprimer un compte utilisateur</h4>
+            <div class="form-group">
+                <label for="user_id">ID de l'utilisateur :</label>
+                <input type="number" id="user_id" name="user_id" class="form-control" required>
+            </div>
+            <button type="submit" name="delete_user" class="btn btn-danger">Supprimer le compte utilisateur</button>
+        </form>
         <hr>
-
         <?php if (isset($_POST['choose_category'])) : ?>
             <form method="post" action="admin.php">
                 <h4>Ajouter/Supprimer un produit</h4>
@@ -160,13 +174,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="form-group">
                     <label for="product_category">Catégorie :</label>
-                    <input type="text" id="product_category" name="product_category" class="form-control" required>
+                    <select id="product_category" name="product_category" class="form-control" required>
+                        <option value="">Toutes les catégories</option>
+                        <option value="Enfant">Enfant</option>
+                        <option value="Homme">Homme</option>
+                        <option value="Femme">Femme</option>
+                    </select>
                 </div>
                 <button type="submit" name="add_product" class="btn btn-primary">Ajouter le produit</button>
             </form>
-
             <hr>
-
             <form method="post" action="admin.php">
                 <h4>Supprimer un produit</h4>
                 <input type="hidden" name="selected_category" value="<?= $_POST['selected_category'] ?>">
@@ -176,16 +193,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit" name="delete_product" class="btn btn-danger">Supprimer le produit</button>
             </form>
-
             <hr>
-
-            
-
         <?php endif; ?>
-
         <hr>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
