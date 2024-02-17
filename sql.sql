@@ -24,13 +24,16 @@ CREATE TABLE IF NOT EXISTS produits (
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
 );
-CREATE TABLE IF NOT EXISTS paniers (
-    id_panier INT AUTO_INCREMENT PRIMARY KEY,
-    id_utilisateur INT,
-    id_produit INT,
-    prix DECIMAL(10, 2) NOT NULL,
+CREATE TABLE IF NOT EXISTS panier_utilisateur (
+    id_utilisateur_panier INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    id_produit INT NOT NULL,
+    quantite INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    nom_produit VARCHAR(100) NOT NULL,
+    description_produit TEXT,
+    prix_produit DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
-    FOREIGN KEY (id_produit) REFERENCES produits(id_produit)
 );
 CREATE TABLE IF NOT EXISTS commandes (
     id_commande INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,7 +58,8 @@ CREATE TABLE IF NOT EXISTS pantalon (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-);
+) AUTO_INCREMENT=100;
+
 CREATE TABLE IF NOT EXISTS veste (
     id_veste INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -63,7 +67,8 @@ CREATE TABLE IF NOT EXISTS veste (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-);
+) AUTO_INCREMENT=200;
+
 CREATE TABLE IF NOT EXISTS basket (
     id_basket INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -71,7 +76,8 @@ CREATE TABLE IF NOT EXISTS basket (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-);
+);AUTO_INCREMENT=300;
+
 CREATE TABLE codes_promo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL,

@@ -54,8 +54,8 @@ $result = $conn->query($sql);
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">PHP</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="./catalogue.php">PHP</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -145,7 +145,7 @@ $result = $conn->query($sql);
                     $user = $result_user->fetch_assoc();
 
                     if ($user['statut'] == 'actif') {
-                        echo '<a href="panier.php?id=' . $row['id_veste'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                        echo '<a href="ajouter_panier_veste.php?id=' . $row['id_veste'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
                     } else {
                         echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                     }
