@@ -10,7 +10,6 @@ use PayPal\Api\Transaction;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
 
-// Définir vos clés d'API PayPal
 $clientId = 'AbaeH59hs8nIOe7i4gE8kMfEg_cWHO2mfKDLA8jnA-8yXuMU-N1aBgnDo0BRY6q4I_QEQK6O9gZDPJjm';
 $clientSecret = 'ENeNXq0_hoNEMYyCXGG09kIu89pYgGrjhIDotGGZfj4LdiCrmE-FbOuZijOGxWVarNSWnUvlk-Yk71ol';
 
@@ -51,10 +50,11 @@ try {
     header('Location: ' . $payment->getApprovalLink());
     exit;
 } catch (Exception $ex) {
-    // Gérer les erreurs
+
     echo "Une erreur s'est produite lors de la création du paiement PayPal: " . $ex->getMessage();
     header("Location: cancel.php");
     exit;
+
 }
 
 ?>
