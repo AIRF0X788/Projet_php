@@ -82,10 +82,15 @@ $result = $conn->query($sql);
                 } else {
                     echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
                 }
-                
+
                 ?>
             </ul>
             <form class="form-inline my-2 my-lg-0 ml-auto">
+            <?php
+                if (isset($user_id)) {
+                    echo '<a href="ajouter_wishlist.php?produitId= ?" class="btn btn-danger mr-sm-2">Wishlist</a>';
+                }
+                ?>
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
@@ -97,19 +102,19 @@ $result = $conn->query($sql);
             }
             ?>
             <?php
-        if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-            $user_id = $_SESSION['user_id'];
-            $sql_check_admin = "SELECT est_admin FROM utilisateurs WHERE id_utilisateur = ? AND est_admin = 1";
-            $stmt_check_admin = $conn->prepare($sql_check_admin);
-            $stmt_check_admin->bind_param("i", $user_id);
-            $stmt_check_admin->execute();
-            $result_check_admin = $stmt_check_admin->get_result();
+            if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+                $user_id = $_SESSION['user_id'];
+                $sql_check_admin = "SELECT est_admin FROM utilisateurs WHERE id_utilisateur = ? AND est_admin = 1";
+                $stmt_check_admin = $conn->prepare($sql_check_admin);
+                $stmt_check_admin->bind_param("i", $user_id);
+                $stmt_check_admin->execute();
+                $result_check_admin = $stmt_check_admin->get_result();
 
-            if ($result_check_admin->num_rows > 0) {
-                echo '<a href="./admin.php" class="btn btn-success ml-2">Admin</a>';
+                if ($result_check_admin->num_rows > 0) {
+                    echo '<a href="./admin.php" class="btn btn-success ml-2">Admin</a>';
+                }
             }
-        }
-        ?>
+            ?>
     </nav>
     <h2 class="text-center">Les Baskets</h2>
     <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -143,14 +148,15 @@ $result = $conn->query($sql);
                 $user = $result_user->fetch_assoc();
 
                 if ($user['statut'] == 'actif') {
-                    echo '<a href="ajouter_panier_basket.php?id=' . $row['id_basket'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    echo '<a href="ajouter_panier_catalogue.php?id=' . $row['id_produit'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    echo '<a href="ajouter_wishlist.php?produitId=' . $row['id_produit'] . '" class="btn btn-danger ml-2">Wishlist</a>';
                 } else {
                     echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                 }
             } else {
                 echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
             }
-
+        
             echo '</div>';
             echo '</div>';
         }

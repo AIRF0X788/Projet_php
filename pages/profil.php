@@ -130,11 +130,17 @@ $conn->close();
                 }
                 ?>
             </ul>
+
             <form class="form-inline my-2 my-lg-0 ml-auto">
+            <?php
+                if (isset($user_id)) {
+                    echo '<a href="ajouter_wishlist.php?produitId= ?" class="btn btn-danger mr-sm-2">Wishlist</a>';
+                }
+                ?>
                 <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
-            <a href="#" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
+            <a href="panier.php" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
         </div>
     </nav>
     <div class="container mt-5">

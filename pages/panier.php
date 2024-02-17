@@ -46,6 +46,13 @@
                         <a class="nav-link" href="./pantalon.php">Pantalon</a>
                     </li>
                 </ul>
+                
+                <?php
+                if (isset($user_id)) {
+                    echo '<a href="ajouter_wishlist.php?produitId= ?" class="btn btn-danger ml-2">Wishlist</a>';
+                }
+                ?>
+
                 <?php
                 if (isset($_SESSION['user_id'])) {
                     echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light">X</span></a>';
@@ -180,7 +187,11 @@
         <input type="text" name="code_promo" placeholder="Entrez votre code promo">
         <input type="submit" name="appliquer_code_promo" value="Appliquer">
     </form>
-
+<br>
+    <form method="post" action="process_payment.php">
+        <input type="hidden" name="total_price" value="<?php echo $total_price; ?>">
+        <input type="submit" name="submit_payment" value="Payer" class="btn btn-success">
+    </form>
 </body>
 
 </html>

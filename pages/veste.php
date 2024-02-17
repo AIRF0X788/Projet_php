@@ -83,9 +83,17 @@ $result = $conn->query($sql);
                     echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
                 }
                 ?>
+                </ul>
+
+
                 <form class="form-inline my-2 my-lg-0 ml-auto">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+                <?php
+                if (isset($user_id)) {
+                    echo '<a href="ajouter_wishlist.php?produitId= ?" class="btn btn-danger mr-sm-2">Wishlist</a>';
+                }
+                ?>
+                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
                 </form>
                 <?php
                 if (isset($_SESSION['user_id'])) {
@@ -145,14 +153,15 @@ $result = $conn->query($sql);
                     $user = $result_user->fetch_assoc();
 
                     if ($user['statut'] == 'actif') {
-                        echo '<a href="ajouter_panier_veste.php?id=' . $row['id_veste'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                        echo '<a href="ajouter_panier_catalogue.php?id=' . $row['id_produit'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                        echo '<a href="ajouter_wishlist.php?produitId=' . $row['id_produit'] . '" class="btn btn-danger ml-2">Wishlist</a>';
                     } else {
                         echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                     }
                 } else {
                     echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
                 }
-
+            
                 echo '</div>';
                 echo '</div>';
             }
