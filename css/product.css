@@ -88,11 +88,11 @@ body {
 }
 
 .navbar-nav .nav-item {
-  margin-right: 75px;
+  margin-right: 15px;
 }
 
 .navbar-brand {
-  margin-right: 180px;
+  margin-right: 15px;
   color: rgb(0, 0, 0);
   font-family: "Sedgwick Ave Display";
 }
