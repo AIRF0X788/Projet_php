@@ -1,153 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ./login.php');
-    exit();
-}
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    $produit_id = $_GET['id'];
-    $nom_produit = $_GET['nom'];
-    $description_produit = $_GET['description'];
-    $prix_produit = $_GET['prix'];
-    $image_url_produit = $_GET['image_url'];
+// Vérifiez si l'utilisateur est connecté
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
 
-    $produit = [
-        'id' => $produit_id,
-        'nom' => $nom_produit,
-        'description' => $description_produit,
-        'prix' => $prix_produit,
-        'image_url' => $image_url_produit
-    ];
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $database = "dbphp";
 
-    if (!isset($_SESSION['panier'])) {
-        $_SESSION['panier'] = [];
+    $conn = new mysqli($servername, $username, $password, $database);
+
+    if ($conn->connect_error) {
+        die("La connexion à la base de données a échoué : " . $conn->connect_error);
     }
 
-    $_SESSION['panier'][] = $produit;
-}
+    // Requête pour récupérer tous les produits du panier de l'utilisateur
+    $sql = "SELECT * FROM panier_utilisateur WHERE id_utilisateur = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['supprimer'])) {
-    $index = $_POST['supprimer'];
-    if (isset($_SESSION['panier'][$index])) {
-        unset($_SESSION['panier'][$index]);
-        $_SESSION['panier'] = array_values($_SESSION['panier']);
-    }
-}
+    if ($result->num_rows > 0) {
+        echo '<h2>Mon Panier</h2>';
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_panier'])) {
-    if (isset($_SESSION['panier']) && count($_SESSION['panier']) > 0) {
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $database = "dbphp";
-        $conn = new mysqli($servername, $username, $password, $database);
-
-        if ($conn->connect_error) {
-            die("La connexion à la base de données a échoué : " . $conn->connect_error);
+        while ($row = $result->fetch_assoc()) {
+            // Affichez les détails du produit
+            echo '<div>';
+            echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom_produit'] . '" style="width:100px; height:100px;">';
+            echo '<p>Nom : ' . $row['nom_produit'] . '</p>';
+            echo '<p>Description : ' . $row['description_produit'] . '</p>';
+            echo '<p>Prix : $' . $row['prix_produit'] . '</p>';
+            echo '<p>Quantité : ' . $row['quantite'] . '</p>';
+            echo '</div>';
         }
-
-        $user_id = $_SESSION['user_id'];
-        $stmt = $conn->prepare("INSERT INTO paniers (id_utilisateur, prix) VALUES (?, ?)");
-        $stmt->bind_param("id", $user_id, $total);
-
-        $total = 0;
-        foreach ($_SESSION['panier'] as $product) {
-            $total += $product['prix'];
-        }
-
-        $stmt->execute();
-        $id_panier = $conn->insert_id;
-
-        foreach ($_SESSION['panier'] as $product) {
-            $id_produit = $product['id'];
-            $stmt = $conn->prepare("INSERT INTO commande_produits (id_commande, id_produit, prix) VALUES (?, ?, ?)");
-            $stmt->bind_param("idi", $id_panier, $id_produit, $product['prix']);
-            $stmt->execute();
-        }
-
-        $stmt = $conn->prepare("INSERT INTO paniers (id_utilisateur, prix) VALUES (?, ?)");
-        $stmt->bind_param("id", $user_id, $total_panier);
-
-        $total_panier = 0;
-        foreach ($_SESSION['panier'] as $product) {
-            $total_panier += $product['prix'];
-        }
-
-        $stmt->execute();
-        $id_panier = $conn->insert_id;
-
-
-        $conn->close();
-        $_SESSION['panier'] = [];
-
-        header('Location: commande.php?id_panier=' . $id_panier);
-    }
-}
-
-?>
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Mon Panier</title>
-    <link rel="stylesheet" href="../css/panier.css">
-
-</head>
-
-<body>
-    <h1>Mon Panier</h1>
-
-    <?php
-    if (isset($_SESSION['panier']) && count($_SESSION['panier']) > 0) {
-        echo '<table>';
-        echo '<tr><th>Produit</th><th>Nom</th><th>Description</th><th>Prix</th><th>Action</th></tr>';
-
-        $total = 0;
-
-        foreach ($_SESSION['panier'] as $index => $product) {
-            echo '<tr>';
-            echo '<td><img src="' . $product['image_url'] . '" alt="' . $product['nom'] . '"></td>';
-            echo '<td>' . $product['nom'] . '</td>';
-            echo '<td>' . $product['description'] . '</td>';
-            echo '<td>$' . number_format($product['prix'], 2) . '</td>';
-            echo '<td>';
-            echo '<form method="post" action="panier.php">';
-            echo '<input type="hidden" name="supprimer" value="' . $index . '">';
-            echo '<input type="submit" value="Supprimer">';
-            echo '</form>';
-            echo '</td>';
-            echo '</tr>';
-            $total += $product['prix'];
-        }
-
-        echo '</table>';
-
-        echo '<p class="total">Total : $' . number_format($total, 2) . '</p>';
-
-        echo '<div class="valider-panier">';
-        echo '<form method="post" action="panier.php">';
-        echo '<input type="submit" name="valider_panier" value="Valider mon panier">';
-        echo '</form>';
-        echo '</div>';
     } else {
-        echo '<p class="empty-cart">Votre panier est vide.</p>';
+        echo 'Le panier est vide.';
     }
 
-
-    ?>
-
-    <form method="post" action="panier.php">
-        <input type="text" name="code_promo" placeholder="Entrez votre code promo">
-        <input type="submit" name="appliquer_code_promo" value="Appliquer">
-    </form>
-
-    <footer>
-        © 2023 PHP Site Web
-        <a href="contact.php" class="btn btn-primary">Nous contacter</a>
-    </footer>
-</body>
-
-</html>
+    $conn->close();
+} else {
+    echo 'Utilisateur non connecté.';
+}
+?>

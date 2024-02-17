@@ -202,7 +202,7 @@ session_start();
                     $user_id = $conn->insert_id;
                     $_SESSION['user_id'] = $user_id;
 
-                    $activation_link = "http://localhost/xampp/vrai%20php/pages/activer_compte.php?token=" . $activation_token;
+                    $activation_link = "http://localhost/xampp/Ecommerce/Projet_php/pages/activer_compte.php?token=" . $activation_token;
 
                     $to = $email;
                     $subject = "Bienvenue sur Projet-Php.com";

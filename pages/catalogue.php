@@ -132,13 +132,14 @@ if (isset($_SESSION['user_id'])) {
                 $user = $result_user->fetch_assoc();
 
                 if ($user['statut'] == 'actif') {
-                    echo '<a href="panier.php?id=' . $row['id_produit'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    echo '<a href="ajouter_panier_catalogue.php?id=' . $row['id_produit'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
                 } else {
                     echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                 }
             } else {
                 echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
             }
+
 
             echo '</div>';
             echo '</div>';

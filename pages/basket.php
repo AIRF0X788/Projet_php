@@ -129,7 +129,7 @@ $result = $conn->query($sql);
                 $user = $result_user->fetch_assoc();
 
                 if ($user['statut'] == 'actif') {
-                    echo '<a href="panier.php?id=' . $row['id_basket'] . '&nom=' . $row['nom'] . '&description=' . $row['description'] . '&prix=' . $row['prix'] . '&image_url=' . $row['image_url'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    echo '<a href="ajouter_panier_basket.php?id=' . $row['id_basket'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
                 } else {
                     echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                 }
