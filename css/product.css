@@ -147,3 +147,26 @@ footer {
   bottom: 0;
   width: 100%;
 }
+
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.product-table th {
+  background-color: #f2f2f2;
+}
+
+.product-img {
+  max-width: 100px;
+  max-height: 100px;
+}
