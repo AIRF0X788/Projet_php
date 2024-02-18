@@ -4,19 +4,29 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit06a246fb7fd541d754d977d9b5f184ae
+class ComposerStaticInitc44053762671f5e67f14e0d2c9f01b33
 {
     public static $prefixLengthsPsr4 = array (
-        'F' => 
+        'P' => 
         array (
-            'Faker\\' => 6,
+            'Psr\\Log\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Faker\\' => 
+        'Psr\\Log\\' => 
         array (
-            0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'PayPal' => 
+            array (
+                0 => __DIR__ . '/..' . '/paypal/rest-api-sdk-php/lib',
+            ),
         ),
     );
 
@@ -27,9 +37,10 @@ class ComposerStaticInit06a246fb7fd541d754d977d9b5f184ae
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit06a246fb7fd541d754d977d9b5f184ae::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit06a246fb7fd541d754d977d9b5f184ae::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit06a246fb7fd541d754d977d9b5f184ae::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc44053762671f5e67f14e0d2c9f01b33::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc44053762671f5e67f14e0d2c9f01b33::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc44053762671f5e67f14e0d2c9f01b33::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitc44053762671f5e67f14e0d2c9f01b33::$classMap;
 
         }, null, ClassLoader::class);
     }

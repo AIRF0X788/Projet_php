@@ -33,24 +33,16 @@ CREATE TABLE IF NOT EXISTS panier_utilisateur (
     nom_produit VARCHAR(100) NOT NULL,
     description_produit TEXT,
     prix_produit DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
 CREATE TABLE IF NOT EXISTS commandes (
     id_commande INT AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur INT,
     date_commande DATE,
     prix DECIMAL(10, 2),
-    nom_utilisateur VARCHAR(100),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
-CREATE TABLE IF NOT EXISTS commande_produits (
-    id_commande_produit INT AUTO_INCREMENT PRIMARY KEY,
-    id_commande INT,
-    id_produit INT,
-    prix DECIMAL(10, 2),
-    FOREIGN KEY (id_commande) REFERENCES commandes(id_commande),
-    FOREIGN KEY (id_produit) REFERENCES produits(id_produit)
-);
+
 CREATE TABLE IF NOT EXISTS pantalon (
     id_pantalon INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -76,7 +68,7 @@ CREATE TABLE IF NOT EXISTS basket (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-);AUTO_INCREMENT=300;
+) AUTO_INCREMENT=300;
 
 CREATE TABLE codes_promo (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,7 +85,6 @@ CREATE TABLE IF NOT EXISTS demandes_contact (
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
-CREATE INDEX IF NOT EXISTS idx_utilisateur_panier ON paniers (id_utilisateur);
 CREATE INDEX IF NOT EXISTS idx_utilisateur_commande ON commandes (id_utilisateur);
 INSERT INTO codes_promo (code, valeur) VALUES ('Tom', 0.10);
 INSERT INTO codes_promo (code, valeur) VALUES ('Tam', 0.20);

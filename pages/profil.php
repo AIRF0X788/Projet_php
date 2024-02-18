@@ -175,6 +175,8 @@ $conn->close();
         <?php if (!empty($success_password)) {
             echo "<p class='text-success'>$success_password</p>";
         } ?>
+<a href="orders.php" class="btn btn-primary">Historique des commandes</a>
+
     </div>
 
 

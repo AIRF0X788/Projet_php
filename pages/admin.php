@@ -183,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit" name="add_product" class="btn btn-primary">Ajouter le produit</button>
             </form>
+            
             <hr>
             <form method="post" action="admin.php">
                 <h4>Supprimer un produit</h4>
@@ -193,9 +194,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit" name="delete_product" class="btn btn-danger">Supprimer le produit</button>
             </form>
+            
             <hr>
         <?php endif; ?>
+        <h4>Demande de contact</h4>
+        <a href="./demande_contact.php">Page de contact</a>
         <hr>
+        
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

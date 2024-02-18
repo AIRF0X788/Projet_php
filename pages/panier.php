@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
     <title>Mon panier</title>
 
 </head>
@@ -100,22 +101,22 @@
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['appliquer_code_promo'])) {
                 $code_promo = $_POST['code_promo'];
-
+            
                 $sql = "SELECT valeur FROM codes_promo WHERE code = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("s", $code_promo);
                 $stmt->execute();
                 $result = $stmt->get_result();
-
+            
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
                     $reduction = $row['valeur'];
-
+            
                     $_SESSION['reduction'] = $reduction;
                 } else {
                     echo "Code promo invalide.";
                 }
-            }
+            }            
 
             $sql = "SELECT * FROM panier_utilisateur WHERE id_utilisateur = ?";
             $stmt = $conn->prepare($sql);
@@ -174,12 +175,18 @@
         } else {
             echo '<p class="total">Total : $' . number_format($total, 2) . '</p>';
         }
+
         ?>
     </div>
     <form method="post" action="panier.php">
         <input type="text" name="code_promo" placeholder="Entrez votre code promo">
         <input type="submit" name="appliquer_code_promo" value="Appliquer">
     </form>
+    <form method="post" action="process_payment.php">
+        <input type="hidden" name="total_price" value="<?php echo $total; ?>">
+        <input type="submit" name="submit_payment" value="Payer" class="btn btn-success">
+    </form>
+
 
 </body>
 
