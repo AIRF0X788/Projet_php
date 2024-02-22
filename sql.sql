@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS pantalon (
     description TEXT,
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
+    note_moyenne DECIMAL(2,1) DEFAULT NULL,
     category VARCHAR(255) NOT NULL
 ) AUTO_INCREMENT=100;
 
@@ -58,17 +59,57 @@ CREATE TABLE IF NOT EXISTS veste (
     description TEXT,
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
+    note_moyenne DECIMAL(2,1) DEFAULT NULL,
     category VARCHAR(255) NOT NULL
 ) AUTO_INCREMENT=200;
 
 CREATE TABLE IF NOT EXISTS basket (
     id_basket INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
+    nom_utilisateur VARCHAR(50) NOT NULL,
     description TEXT,
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
+    note_moyenne DECIMAL(2,1) DEFAULT NULL,
     category VARCHAR(255) NOT NULL
 ) AUTO_INCREMENT=300;
+
+CREATE TABLE IF NOT EXISTS avis_basket (
+    id_avis INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT,
+    id_produit INT,
+    commentaire TEXT,
+    note INT,
+    nom_utilisateur VARCHAR(50) NOT NULL DEFAULT 'Utilisateur Anonyme',
+    date_avis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_produit) REFERENCES basket(id_basket)
+);
+
+
+CREATE TABLE IF NOT EXISTS avis_pantalon (
+    id_avis INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT,
+    id_produit INT,
+    commentaire TEXT,
+    note INT,
+    nom_utilisateur VARCHAR(50) NOT NULL DEFAULT 'Utilisateur Anonyme',
+    date_avis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_produit) REFERENCES pantalon(id_pantalon)
+);
+
+CREATE TABLE IF NOT EXISTS avis_veste (
+    id_avis INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT,
+    id_produit INT,
+    commentaire TEXT,
+    note INT,
+    nom_utilisateur VARCHAR(50) NOT NULL DEFAULT 'Utilisateur Anonyme',
+    date_avis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_produit) REFERENCES veste(id_veste)
+);
 
 CREATE TABLE codes_promo (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,6 +123,7 @@ CREATE TABLE IF NOT EXISTS demandes_contact (
     message TEXT NOT NULL,
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
