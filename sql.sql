@@ -121,8 +121,8 @@ CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
 CREATE INDEX IF NOT EXISTS idx_utilisateur_commande ON commandes (id_utilisateur);
-INSERT INTO codes_promo (code, valeur) VALUES ('Tom', 0.10);
-INSERT INTO codes_promo (code, valeur) VALUES ('Tam', 0.20);
+INSERT INTO codes_promo (code, valeur, actif) VALUES ('Tom', 0.10, 1);
+INSERT INTO codes_promo (code, valeur, actif) VALUES ('Tam', 0.20, 0);
 
 INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
