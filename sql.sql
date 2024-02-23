@@ -5,16 +5,8 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
     mot_de_passe VARCHAR(255) NOT NULL,
     statut VARCHAR(10) NOT NULL DEFAULT 'inactif',
     activation_token VARCHAR(255) DEFAULT NULL,
-    est_admin BOOLEAN DEFAULT 0
-);
-CREATE TABLE IF NOT EXISTS adresses (
-    id_adresse INT AUTO_INCREMENT PRIMARY KEY,
-    id_utilisateur INT,
-    adresse_rue VARCHAR(100),
-    ville VARCHAR(50),
-    etat VARCHAR(50),
-    code_postal VARCHAR(10),
-    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
+    est_admin BOOLEAN DEFAULT 0,
+    points_fidelite INT DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS produits (
     id_produit INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,7 +34,6 @@ CREATE TABLE IF NOT EXISTS commandes (
     prix DECIMAL(10, 2),
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
-
 CREATE TABLE IF NOT EXISTS pantalon (
     id_pantalon INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -50,8 +41,7 @@ CREATE TABLE IF NOT EXISTS pantalon (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-) AUTO_INCREMENT=100;
-
+) AUTO_INCREMENT = 100;
 CREATE TABLE IF NOT EXISTS veste (
     id_veste INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -59,8 +49,7 @@ CREATE TABLE IF NOT EXISTS veste (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-) AUTO_INCREMENT=200;
-
+) AUTO_INCREMENT = 200;
 CREATE TABLE IF NOT EXISTS basket (
     id_basket INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -68,8 +57,7 @@ CREATE TABLE IF NOT EXISTS basket (
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL
-) AUTO_INCREMENT=300;
-
+) AUTO_INCREMENT = 300;
 CREATE TABLE codes_promo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL,
@@ -86,9 +74,10 @@ CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
 CREATE INDEX IF NOT EXISTS idx_utilisateur_commande ON commandes (id_utilisateur);
-INSERT INTO codes_promo (code, valeur) VALUES ('Tom', 0.10);
-INSERT INTO codes_promo (code, valeur) VALUES ('Tam', 0.20);
-
+INSERT INTO codes_promo (code, valeur)
+VALUES ('Tom', 0.10);
+INSERT INTO codes_promo (code, valeur)
+VALUES ('Tam', 0.20);
 INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
         'Produit1',

@@ -28,44 +28,48 @@ if (!isset($_SESSION['user_id'])) {
 $totalPrice = $_POST['total_price'];
 $id_utilisateur = $_SESSION['user_id'];
 
-$payer = new Payer();
-$payer->setPaymentMethod('paypal');
+try {
+    $date_commande = date('Y-m-d H:i:s');
+    $conn = new PDO("mysql:host=localhost;dbname=dbphp", "root", "");
+    $stmt = $conn->prepare("INSERT INTO commandes (id_utilisateur, date_commande, total) VALUES (:id_utilisateur, :date_commande, :total)");
+    $stmt->bindParam(':id_utilisateur', $id_utilisateur);
+    $stmt->bindParam(':date_commande', $date_commande);
+    $stmt->bindParam(':total', $totalPrice);
+    $stmt->execute();
 
-$amount = new Amount();
-$amount->setTotal($totalPrice);
-$amount->setCurrency('EUR');
+    $points_gagnes = floor($totalPrice / 10);
+    $stmt_update = $conn->prepare("UPDATE utilisateurs SET points_fidelite = points_fidelite + :points_gagnes WHERE id_utilisateur = :id_utilisateur");
+    $stmt_update->bindParam(':points_gagnes', $points_gagnes);
+    $stmt_update->bindParam(':id_utilisateur', $id_utilisateur);
+    $stmt_update->execute();
 
-$transaction = new Transaction();
-$transaction->setAmount($amount);
+    $payer = new Payer();
+    $payer->setPaymentMethod('paypal');
 
-$redirectUrls = new RedirectUrls();
-$redirectUrls->setReturnUrl('http://localhost/xampp/vrai%20php/pages/success.php')
-    ->setCancelUrl('http://localhost/xampp/vrai%20php/pages/cancel.php');
+    $amount = new Amount();
+    $amount->setTotal($totalPrice);
+    $amount->setCurrency('EUR');
 
-$payment = new Payment();
-$payment->setIntent('sale')
-    ->setPayer($payer)
-    ->setTransactions([$transaction])
-    ->setRedirectUrls($redirectUrls);
+    $transaction = new Transaction();
+    $transaction->setAmount($amount);
 
-    try {
-        $date_commande = date('Y-m-d H:i:s');
-        $conn = new PDO("mysql:host=localhost;dbname=dbphp", "root", "");
-        $stmt = $conn->prepare("INSERT INTO commandes (id_utilisateur, date_commande, total) VALUES (:id_utilisateur, :date_commande, :total)");
-        $stmt->bindParam(':id_utilisateur', $id_utilisateur);
-        $stmt->bindParam(':date_commande', $date_commande);
-        $stmt->bindParam(':total', $totalPrice);
-        $stmt->execute();
-    
-        $payment->create($apiContext);
-    
-        header('Location: ' . $payment->getApprovalLink());
-        exit;
-    } catch (Exception $ex) {
-        echo "Une erreur s'est produite lors de la création du paiement PayPal: " . $ex->getMessage();
-        header("Location: cancel.php");
-        exit;
-    }
-    
+    $redirectUrls = new RedirectUrls();
+    $redirectUrls->setReturnUrl('http://localhost/xampp/vrai%20php/pages/success.php')
+        ->setCancelUrl('http://localhost/xampp/vrai%20php/pages/cancel.php');
 
+    $payment = new Payment();
+    $payment->setIntent('sale')
+        ->setPayer($payer)
+        ->setTransactions([$transaction])
+        ->setRedirectUrls($redirectUrls);
+
+    $payment->create($apiContext);
+
+    header('Location: ' . $payment->getApprovalLink());
+    exit;
+} catch (Exception $ex) {
+    echo "Une erreur s'est produite lors de la création du paiement PayPal: " . $ex->getMessage();
+    header("Location: cancel.php");
+    exit;
+}
 ?>
