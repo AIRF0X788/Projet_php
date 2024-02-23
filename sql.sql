@@ -144,7 +144,7 @@ INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
         'Produit3',
         'Description du Produit 3',
-        9.99,
+        15.99,
         '../image/veste1.webp',
         'Enfant'
     );
@@ -152,7 +152,7 @@ INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
         'Produit2',
         'Description du Produit 2',
-        29.99,
+        79.99,
         '../image/basket1.webp',
         'Homme'
     );
@@ -208,7 +208,7 @@ INSERT INTO veste (nom, description, prix, image_url, category)
 VALUES (
         'Veste1',
         'Couleur kaki',
-        19.99,
+        15.99,
         '../image/veste1.webp',
         'Femme'
     );
