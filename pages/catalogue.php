@@ -63,10 +63,15 @@ if (isset($_SESSION['user_id'])) {
                         <a class="nav-link" href="<?php echo $loginPage; ?>"><?php echo $connectButtonText; ?></a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0 ml-auto">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-                </form>
+                <form class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search" name="search_term">
+                <input type="hidden" name="is_pantalon_search" value="1">
+                <input type="hidden" name="is_veste_search" value="2">
+                <input type="hidden" name="is_basket_search" value="3">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+            </form>
+
+
                 <?php
                 if (isset($_SESSION['user_id'])) {
                     echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>';
@@ -95,21 +100,42 @@ if (isset($_SESSION['user_id'])) {
 
         $conn = new mysqli($servername, $username, $password, $database);
 
+       
         if ($conn->connect_error) {
             die("La connexion à la base de données a échoué : " . $conn->connect_error);
         }
 
+     
         $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
+        $search_term = isset($_GET['search_term']) ? strtolower($_GET['search_term']) : '';
+        $is_veste_search = isset($_GET['is_veste_search']) ? $_GET['is_veste_search'] : '';
+        $is_pantalon_search = isset($_GET['is_pantalon_search']) ? $_GET['is_pantalon_search'] : '';
+        $is_basket_search = isset($_GET['is_basket_search']) ? $_GET['is_basket_search'] : '';
 
+      
         $sql = "SELECT id_produit, nom, description, prix, image_url, category FROM produits";
+
+   
         if (!empty($filter_category)) {
             $sql .= " WHERE category = ?";
         }
 
+  
+        if ($is_veste_search == '2' && strpos($search_term, 've') !== false) {
+            $sql = "SELECT id_veste, nom, description, prix, image_url, category FROM veste WHERE nom LIKE '%$search_term%'";
+        } elseif ($is_pantalon_search == '1' && strpos($search_term, 'pa') !== false) {
+            $sql = "SELECT id_pantalon, nom, description, prix, image_url, category FROM pantalon WHERE nom LIKE '%$search_term%'";
+        } elseif ($is_basket_search == '3' && strpos($search_term, 'ba') !== false) {
+            $sql = "SELECT id_basket, nom, description, prix, image_url, category FROM basket WHERE nom LIKE '%$search_term%'";
+        }
+
         $stmt = $conn->prepare($sql);
+
+      
         if (!empty($filter_category)) {
             $stmt->bind_param("s", $filter_category);
         }
+
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -121,8 +147,19 @@ if (isset($_SESSION['user_id'])) {
             echo '<p class="category">' . $row['category'] . '</p>';
             echo '<p>' . $row['description'] . '</p>';
             echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
-            echo '<a href="product_catalogue.php?id=' . $row['id_produit'] . '" class="btn btn-primary">Voir Détails</a>';
+        
+            
+            if (isset($row['id_pantalon'])) {
+                echo '<a href="product_pantalon.php?id=' . $row['id_pantalon'] . '" class="btn btn-primary">Voir Détails</a>';
+            } elseif (isset($row['id_veste'])) {
+                echo '<a href="product_veste.php?id=' . $row['id_veste'] . '" class="btn btn-primary">Voir Détails</a>';
+            } elseif (isset($row['id_basket'])) {
+                echo '<a href="product_basket.php?id=' . $row['id_basket'] . '" class="btn btn-primary">Voir Détails</a>';
+            } else {
+                echo '<a href="product_catalogue.php?id=' . $row['id_produit'] . '" class="btn btn-primary">Voir Détails</a>';
+            }
 
+            
             if (isset($user_id)) {
                 $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
                 $stmt_user = $conn->prepare($sql_user);
@@ -130,26 +167,27 @@ if (isset($_SESSION['user_id'])) {
                 $stmt_user->execute();
                 $result_user = $stmt_user->get_result();
                 $user = $result_user->fetch_assoc();
-
+        
                 if ($user['statut'] == 'actif') {
-                    echo '<a href="ajouter_panier_catalogue.php?id=' . $row['id_produit'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    $id_for_cart = isset($row['id_pantalon']) ? $row['id_pantalon'] : (isset($row['id_veste']) ? $row['id_veste'] : (isset($row['id_basket']) ? $row['id_basket'] : $row['id_produit']));
+                    $add_to_cart_href = isset($row['id_pantalon']) ? 'ajouter_panier_pantalon.php' : (isset($row['id_veste']) ? 'ajouter_panier_veste.php' : (isset($row['id_basket']) ? 'ajouter_panier_basket.php' : 'ajouter_panier_catalogue.php'));
+        
+                    echo '<a href="' . $add_to_cart_href . '?id=' . $id_for_cart . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
                 } else {
                     echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                 }
             } else {
                 echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
             }
-
-
+        
             echo '</div>';
             echo '</div>';
         }
 
-
-
+        $stmt->close();
         $conn->close();
         ?>
-
+    
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -158,5 +196,5 @@ if (isset($_SESSION['user_id'])) {
             <a href="contact.php" class="btn btn-primary">Nous contacter</a>
         </footer>
     </body>
-
-</html>
+    
+    </html>

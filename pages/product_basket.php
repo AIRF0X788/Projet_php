@@ -1,68 +1,83 @@
-<?php
-session_start();
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Produit</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/page_product.css">
+</head>
 
-if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
-    $user_id = $_SESSION['user_id'];
-    $produit_id = $_GET['id'];
+<body>
 
+    <div class="container">
+        <?php
+        session_start();
 
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "dbphp";
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $database = "dbphp";
 
-    $conn = new mysqli($servername, $username, $password, $database);
+        $conn = new mysqli($servername, $username, $password, $database);
 
-    if ($conn->connect_error) {
-        die("La connexion à la base de données a échoué : " . $conn->connect_error);
-    }
-
-   
-    $table_name = 'basket';
-
-  
-    $sql = "SELECT * FROM $table_name WHERE id_basket = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $produit_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $produit = $result->fetch_assoc();
-
-    if ($produit) {
-        $sqlCheck = "SELECT * FROM panier_utilisateur WHERE id_utilisateur = ? AND id_produit = ?";
-        $stmtCheck = $conn->prepare($sqlCheck);
-        $stmtCheck->bind_param("ii", $user_id, $produit_id);
-        $stmtCheck->execute();
-        $resultCheck = $stmtCheck->get_result();
-        $existingProduit = $resultCheck->fetch_assoc();
-
-        if ($existingProduit) {
-      
-            $newQuantite = $existingProduit['quantite'] + 1;
-            $newPrix = $existingProduit['prix_produit'] + $produit['prix'];
-            $sqlUpdate = "UPDATE panier_utilisateur SET quantite = ?, prix_produit = ? WHERE id_utilisateur = ? AND id_produit = ?";
-            $stmtUpdate = $conn->prepare($sqlUpdate);
-            $stmtUpdate->bind_param("idii", $newQuantite, $newPrix, $user_id, $produit_id);
-            $stmtUpdate->execute();
-            header("Location: ./panier.php");
-        } else {
-        
-            $sqlInsert = "INSERT INTO panier_utilisateur (id_utilisateur, id_produit, quantite, image_url, nom_produit, description_produit, prix_produit)
-                          VALUES (?, ?, 1, ?, ?, ?, ?)";
-            $stmtInsert = $conn->prepare($sqlInsert);
-            $stmtInsert->bind_param("iisssd", $user_id, $produit_id, $produit['image_url'], $produit['nom'], $produit['description'], $produit['prix']);
-            $stmtInsert->execute();
-            header("Location: ./panier.php");
-            exit();
+        if ($conn->connect_error) {
+            die("La connexion à la base de données a échoué : " . $conn->connect_error);
         }
-    } else {
-        echo 'Le produit n\'existe pas.';
-    }
 
- 
-    $conn->close();
-} else {
-    echo 'Erreur : Utilisateur non connecté ou ID du produit manquant.';
-}
-?>
+        if (isset($_GET['id'])) {
+            $product_id = $_GET['id'];
+
+            $stmt = $conn->prepare("SELECT * FROM basket WHERE id_basket = ?");
+            $stmt->bind_param("i", $product_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $product = $result->fetch_assoc();
+                echo "<h1>" . $product['nom'] . "</h1>";
+                echo "<img src='" . $product['image_url'] . "' alt='" . $product['nom'] . "'>";
+                echo "<p>Description: " . $product['description'] . "</p>";
+                echo "<p>Prix: $" . number_format($product['prix'], 2) . "</p>";
+
+           
+                echo "<div class='avis-section'>";
+                echo "<h2>Avis</h2>";
+
+              
+                $avis_stmt = $conn->prepare("SELECT * FROM avis_basket WHERE id_produit = ?");
+                $avis_stmt->bind_param("i", $product_id);
+                $avis_stmt->execute();
+                $avis_result = $avis_stmt->get_result();
+
+                while ($avis = $avis_result->fetch_assoc()) {
+                    echo "<p><strong>" . $avis['nom_utilisateur'] . " : </strong> " . $avis['commentaire'] . " (Note: " . $avis['note'] . "/5, Date: " . $avis['date_avis'] . ")</p>";
+                }
+
+               
+                echo "<h3>Ajouter un avis</h3>";
+                echo "<form action='ajouter_avis_basket.php' method='post'>";
+                echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
+                echo "<label for='commentaire'>Commentaire:</label>";
+                echo "<textarea name='commentaire' id='commentaire' rows='4' required></textarea>";
+                echo "<label for='note'>Note (sur 5):</label>";
+                echo "<input type='number' name='note' id='note' min='1' max='5' required>";
+                echo "<button type='submit'>Ajouter l'avis</button>";
+                echo "</form>";
+
+                echo "</div>";
+            } else {
+                echo "Aucun produit trouvé avec cet ID.";
+            }
+        } else {
+            echo "ID du produit non spécifié.";
+        }
+
+        $conn->close();
+        ?>
+    </div>
+
+</body>
+
+</html>
