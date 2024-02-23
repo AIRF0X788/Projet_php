@@ -11,6 +11,27 @@ if (isset($_SESSION['user_id'])) {
     $loginPage = './login.php';
     $panier_url = "./panier.php";
 }
+// Connexion à la base de données
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "dbphp";
+
+$conn = new mysqli($servername, $username, $password, $database);
+
+if ($conn->connect_error) {
+    die("La connexion à la base de données a échoué : " . $conn->connect_error);
+}
+
+// Récupérer le code promo du moment
+$codePromo = "";
+$query = "SELECT code FROM codes_promo WHERE actif = 1";
+$result = mysqli_query($conn, $query);
+
+if ($result && $row = mysqli_fetch_assoc($result)) {
+    $codePromo = $row['code'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +53,17 @@ if (isset($_SESSION['user_id'])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
     <title>Navbar and Cards</title>
+    <?php
+    // Afficher le pop-up avec le code promo si disponible
+    if (!empty($codePromo)) {
+        echo "<script>
+                window.onload = function() {
+                    alert('CODE PROMO -10% sur tout le sites : $codePromo');
+                }
+              </script>";
+    }
+    ?>
+    
 </head>
 
 <body>
@@ -159,7 +191,7 @@ if (isset($_SESSION['user_id'])) {
                 echo '<a href="product_catalogue.php?id=' . $row['id_produit'] . '" class="btn btn-primary">Voir Détails</a>';
             }
 
-            
+
             if (isset($user_id)) {
                 $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
                 $stmt_user = $conn->prepare($sql_user);
