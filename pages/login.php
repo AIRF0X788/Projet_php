@@ -167,27 +167,26 @@ session_start();
                 } elseif (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
-                    
+            
                     $sql = "SELECT id_utilisateur, mot_de_passe, est_admin FROM utilisateurs WHERE nom_utilisateur = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("s", $login_username);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $row = $result->fetch_assoc();
-                    
+            
                     if ($row && password_verify($login_password, $row['mot_de_passe'])) {
+                        $_SESSION['user_id'] = $row['id_utilisateur'];
+            
                         if ($row['est_admin'] == 1) {
-                            $_SESSION['user_id'] = $row['id_utilisateur'];
                             header('Location: admin.php');
-                            exit;
                         } else {
-                            $_SESSION['user_id'] = $row['id_utilisateur'];
                             header('Location: catalogue.php');
-                            exit;
+                            $_SESSION['popup_shown'] = true;
                         }
                     } else {
                         echo "Nom d'utilisateur ou mot de passe incorrect.";
-                    }                
+                    }             
                 } else {
                     $username = $_POST['username'];
                     $email = $_POST['email'];

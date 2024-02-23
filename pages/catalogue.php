@@ -11,7 +11,7 @@ if (isset($_SESSION['user_id'])) {
     $loginPage = './login.php';
     $panier_url = "./panier.php";
 }
-// Connexion à la base de données
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -23,15 +23,6 @@ if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);
 }
 
-// Récupérer le code promo du moment
-$codePromo = "";
-$query = "SELECT code FROM codes_promo WHERE actif = 1";
-$result = mysqli_query($conn, $query);
-
-if ($result && $row = mysqli_fetch_assoc($result)) {
-    $codePromo = $row['code'];
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,6 +30,9 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,17 +47,49 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
     <title>Navbar and Cards</title>
-    <?php
-    // Afficher le pop-up avec le code promo si disponible
-    if (!empty($codePromo)) {
-        echo "<script>
-                window.onload = function() {
-                    alert('CODE PROMO -10% sur tout le sites : $codePromo');
-                }
-              </script>";
-    }
-    ?>
     
+        <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php
+            // Vérifier si la session et la variable de popup sont définies
+            if (isset($_SESSION['popup_shown']) && $_SESSION['popup_shown']) {
+                echo "Swal.fire({
+                    title: 'Félicitations!',
+                    text: 'Connexion réussie. Bienvenue sur notre site !',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {";
+            
+                echo "if (result.isConfirmed) {";
+            
+                // Requête AJAX pour récupérer un code promo depuis la base de données
+                echo "$.ajax({
+                    type: 'GET',
+                    url: './récupérer_code_promos.php', // Endpoint pour récupérer le code promo
+                    success: function(response) {
+                        // Affichez la deuxième popup avec le code promo
+                        Swal.fire({
+                            title: 'Code Promo',
+                            html: '10% sur ta commande !<br>Avec le code : ' + response,
+                            icon: 'info',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Rediriger après 2 secondes
+                            setTimeout(function() {
+                                location.replace('" . $_SERVER['PHP_SELF'] . "');
+                            }, 2000);
+                        });
+                    }
+                });";
+            
+                echo "}
+                });";
+            
+                $_SESSION['popup_shown'] = false;
+            }
+        ?>
+    });
+</script>
 </head>
 
 <body>
@@ -125,18 +151,6 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
         </form>
 
         <?php
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $database = "dbphp";
-
-        $conn = new mysqli($servername, $username, $password, $database);
-
-       
-        if ($conn->connect_error) {
-            die("La connexion à la base de données a échoué : " . $conn->connect_error);
-        }
-
      
         $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
         $search_term = isset($_GET['search_term']) ? strtolower($_GET['search_term']) : '';
@@ -219,6 +233,9 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
         $stmt->close();
         $conn->close();
         ?>
+        
+        
+      
     
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
