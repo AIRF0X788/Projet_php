@@ -167,26 +167,32 @@ session_start();
                 } elseif (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
-            
-                    $sql = "SELECT id_utilisateur, mot_de_passe, est_admin FROM utilisateurs WHERE nom_utilisateur = ?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("s", $login_username);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $row = $result->fetch_assoc();
-            
-                    if ($row && password_verify($login_password, $row['mot_de_passe'])) {
-                        $_SESSION['user_id'] = $row['id_utilisateur'];
-            
-                        if ($row['est_admin'] == 1) {
-                            header('Location: admin.php');
+                
+                    // Ajouter des vérifications pour s'assurer que les valeurs sont définies
+                    if (!empty($login_username) && !empty($login_password)) {
+                        $sql = "SELECT id_utilisateur, nom_utilisateur, mot_de_passe, est_admin FROM utilisateurs WHERE nom_utilisateur = ?";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("s", $login_username);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                
+                        if ($row && password_verify($login_password, $row['mot_de_passe'])) {
+                            $_SESSION['user_id'] = $row['id_utilisateur'];
+                            $user_name = $row['nom_utilisateur'];
+                            setcookie("user_name_cookie", $user_name, time() + 86400, "/");
+                            if ($row['est_admin'] == 1) {
+                                header('Location: admin.php');
+                            } else {
+                                $_SESSION['popup_shown'] = true;
+                                header('Location: catalogue.php');
+                            }
                         } else {
-                            header('Location: catalogue.php');
-                            $_SESSION['popup_shown'] = true;
+                            echo "Nom d'utilisateur ou mot de passe incorrect.";
                         }
                     } else {
-                        echo "Nom d'utilisateur ou mot de passe incorrect.";
-                    }             
+                        echo "Veuillez saisir le nom d'utilisateur et le mot de passe.";
+                    }
                 } else {
                     $username = $_POST['username'];
                     $email = $_POST['email'];
@@ -218,6 +224,7 @@ session_start();
                     }
                 }
             }
+            
 
             $conn->close();
             ob_end_flush();
