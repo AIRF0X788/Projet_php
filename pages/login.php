@@ -167,8 +167,7 @@ session_start();
                 } elseif (isset($_POST['login'])) {
                     $login_username = $_POST['login_username'];
                     $login_password = $_POST['login_password'];
-                
-                    // Ajouter des vérifications pour s'assurer que les valeurs sont définies
+                   
                     if (!empty($login_username) && !empty($login_password)) {
                         $sql = "SELECT id_utilisateur, nom_utilisateur, mot_de_passe, est_admin FROM utilisateurs WHERE nom_utilisateur = ?";
                         $stmt = $conn->prepare($sql);

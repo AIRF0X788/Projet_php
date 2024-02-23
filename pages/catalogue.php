@@ -51,9 +51,7 @@ if ($conn->connect_error) {
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         <?php
-        // Vérifier si la session et la variable de popup sont définies
         if (isset($_SESSION['popup_shown']) && $_SESSION['popup_shown']) {
-            // Vérifier si le cookie 'user_name_cookie' est défini
             if (isset($_COOKIE['user_name_cookie'])) {
                 $user_name = $_COOKIE['user_name_cookie'];
 
@@ -64,19 +62,16 @@ if ($conn->connect_error) {
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Requête AJAX pour récupérer un code promo depuis la base de données
                         $.ajax({
                             type: 'GET',
                             url: './récupérer_code_promos.php', // Endpoint pour récupérer le code promo
-                            success: function(response) {
-                                // Affichez la deuxième popup avec le code promo
+                            success: function(response) { 
                                 Swal.fire({
                                     title: 'Code Promo',
                                     html: '-10% sur ta prochaine commande !<br>Avec le code : ' + response,
                                     icon: 'info',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    // Rediriger après 2 secondes
                                     setTimeout(function() {
                                         location.replace('" . $_SERVER['PHP_SELF'] . "');
                                     }, 2000);
@@ -154,8 +149,6 @@ if ($conn->connect_error) {
         </form>
                 
         <?php
-     // Vérifie si le cookie 'user_name_cookie' est défini
-    
 
         $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
         $search_term = isset($_GET['search_term']) ? strtolower($_GET['search_term']) : '';
