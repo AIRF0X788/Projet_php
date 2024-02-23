@@ -40,6 +40,33 @@
                 echo "<img src='" . $product['image_url'] . "' alt='" . $product['nom'] . "'>";
                 echo "<p>Description: " . $product['description'] . "</p>";
                 echo "<p>Prix: $" . number_format($product['prix'], 2) . "</p>";
+
+           
+                echo "<div class='avis-section'>";
+                echo "<h2>Avis</h2>";
+
+              
+                $avis_stmt = $conn->prepare("SELECT * FROM avis_pantalon WHERE id_produit = ?");
+                $avis_stmt->bind_param("i", $product_id);
+                $avis_stmt->execute();
+                $avis_result = $avis_stmt->get_result();
+
+                while ($avis = $avis_result->fetch_assoc()) {
+                    echo "<p><strong>" . $avis['nom_utilisateur'] . " : </strong> " . $avis['commentaire'] . " (Note: " . $avis['note'] . "/5, Date: " . $avis['date_avis'] . ")</p>";
+                }
+
+               
+                echo "<h3>Ajouter un avis</h3>";
+                echo "<form action='ajouter_avis_pantalon.php' method='post'>";
+                echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
+                echo "<label for='commentaire'>Commentaire:</label>";
+                echo "<textarea name='commentaire' id='commentaire' rows='4' required></textarea>";
+                echo "<label for='note'>Note (sur 5):</label>";
+                echo "<input type='number' name='note' id='note' min='1' max='5' required>";
+                echo "<button type='submit'>Ajouter l'avis</button>";
+                echo "</form>";
+
+                echo "</div>";
             } else {
                 echo "Aucun produit trouvé avec cet ID.";
             }

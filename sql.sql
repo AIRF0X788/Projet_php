@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS pantalon (
     description TEXT,
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
+    note_moyenne DECIMAL(2,1) DEFAULT NULL,
     category VARCHAR(255) NOT NULL
 ) AUTO_INCREMENT = 100;
 CREATE TABLE IF NOT EXISTS veste (
@@ -48,20 +49,24 @@ CREATE TABLE IF NOT EXISTS veste (
     description TEXT,
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
+    note_moyenne DECIMAL(2,1) DEFAULT NULL,
     category VARCHAR(255) NOT NULL
 ) AUTO_INCREMENT = 200;
 CREATE TABLE IF NOT EXISTS basket (
     id_basket INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
+    nom_utilisateur VARCHAR(50) NOT NULL,
     description TEXT,
     prix DECIMAL(10, 2) NOT NULL,
     image_url VARCHAR(255) NOT NULL,
+    note_moyenne DECIMAL(2,1) DEFAULT NULL,
     category VARCHAR(255) NOT NULL
 ) AUTO_INCREMENT = 300;
 CREATE TABLE codes_promo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL,
-    valeur DECIMAL(5, 2) NOT NULL
+    valeur DECIMAL(5, 2) NOT NULL,
+    actif BOOLEAN DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS demandes_contact (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,6 +75,7 @@ CREATE TABLE IF NOT EXISTS demandes_contact (
     message TEXT NOT NULL,
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
@@ -90,7 +96,7 @@ INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
         'Produit3',
         'Description du Produit 3',
-        9.99,
+        15.99,
         '../image/veste1.webp',
         'Enfant'
     );
@@ -98,7 +104,7 @@ INSERT INTO produits (nom, description, prix, image_url, category)
 VALUES (
         'Produit2',
         'Description du Produit 2',
-        29.99,
+        79.99,
         '../image/basket1.webp',
         'Homme'
     );
@@ -154,7 +160,7 @@ INSERT INTO veste (nom, description, prix, image_url, category)
 VALUES (
         'Veste1',
         'Couleur kaki',
-        19.99,
+        15.99,
         '../image/veste1.webp',
         'Femme'
     );
