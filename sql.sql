@@ -117,6 +117,33 @@ CREATE TABLE IF NOT EXISTS demandes_contact (
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS recompenses (
+    id_recompense INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description TEXT,
+    points_necessaires INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS echanges_points (
+    id_echange INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    id_recompense INT NOT NULL,
+    date_echange TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_recompense) REFERENCES recompenses(id_recompense)
+);
+
+CREATE TABLE IF NOT EXISTS recompenses_utilisateurs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    id_recompense INT NOT NULL,
+    date_attribution TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur),
+    FOREIGN KEY (id_recompense) REFERENCES recompenses(id_recompense)
+);
+
+
+
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
@@ -292,3 +319,10 @@ VALUES (
         '../image/basket6.webp',
         'Homme'
     );
+
+INSERT INTO echanges_points (id_utilisateur, id_recompense)
+VALUES (:id_utilisateur, :id_recompense);
+
+UPDATE utilisateurs
+SET points_fidelite = points_fidelite - (SELECT points_necessaires FROM recompenses WHERE id_recompense = :id_recompense)
+WHERE id_utilisateur = :id_utilisateur;
