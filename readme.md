@@ -63,4 +63,8 @@ Systeme de notation et de commentaires dans "Voir détails" de l'onglet basket, 
 
 Code promo opérationel dans la page panier 
 
+-------------------------------------------------------------------------
+
+Points de fidélité dans la page profil
+
                                         
