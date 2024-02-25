@@ -46,47 +46,52 @@ $result = $conn->query($sql);
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Marker+Hatch&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fascinate+Inline&family=Rubik+Marker+Hatch&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fascinate+Inline&family=Rubik+Marker+Hatch&family=Sedgwick+Ave+Display&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="../css/product.css">
+    <link rel="stylesheet" href="../css/loading.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap" rel="stylesheet">
-    <title>Pantalons</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap"
+        rel="stylesheet">
+    <title>Vestes</title>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="./catalogue.php">PHP</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="./catalogue.php">Accueil <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./profil.php">Profil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./basket.php">Basket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./veste.php">Vestes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./pantalon.php">Pantalon</a>
-                </li>
-                <?php
-                if (isset($_SESSION['user_id'])) {
-                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se Déconnecter</a></li>';
-                } else {
-                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se Connecter</a></li>';
-                }
-                ?>
-                <form class="form-inline my-2 my-lg-0 ml-auto">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-                </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="./catalogue.php">PHP</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto" style="font-size: 20px;">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./catalogue.php">Accueil <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./profil.php">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./basket.php">Basket</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./veste.php">Vestes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./pantalon.php">Pantalon</a>
+                    </li>
+                    <?php
+                    if (isset($_SESSION['user_id'])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
+                    } else {
+                        echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
+                    }
+
+                    ?>
+                </ul>
                 <?php
                 if (isset($_SESSION['user_id'])) {
                     echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>';
@@ -108,19 +113,27 @@ $result = $conn->query($sql);
                     }
                 }
                 ?>
+            </div>
+        </div>
     </nav>
-    <h2 class="text-center">Les Vestes</h2>
+    <h2 class="text-center mt-4">Les Vestes</h2>
     <div>
 
         <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <label for="category-filter">Filtrer par catégorie :</label>
-            <select id="category-filter" name="category">
-                <option value="">Toutes les catégories</option>
-                <option value="Enfant">Enfant</option>
-                <option value="Homme">Homme</option>
-                <option value="Femme">Femme</option>
-            </select>
-            <button type="submit">Filtrer</button>
+            <div class="ml-5 input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="category-filter">Filtrer par catégorie :</label>
+                </div>
+                <div class="col-1">
+                        <select class="custom-select" id="category-filter" name="category">
+                            <option value="">Toutes les catégories</option>
+                            <option value="Enfant">Enfant</option>  
+                            <option value="Homme">Homme</option>
+                            <option value="Femme">Femme</option>
+                        </select>
+                </div>
+                    <button type="submit" class="btn btn-warning">Filtrer</button>
+            </div>
         </form>
 
         <?php

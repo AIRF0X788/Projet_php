@@ -1,8 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
+
+* {
+  overflow-x: hidden;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #f5f5f5;
   margin: 0;
   padding: 0;
+}
+
+a {
+	cursor: pointer;
+  transition: all 200ms linear;
+}
+
+a:hover {
+	text-decoration: none;
 }
 
 .catalog-header {
@@ -94,12 +109,12 @@ body {
 .navbar-brand {
   margin-right: 180px;
   color: rgb(0, 0, 0);
-  font-family: "Sedgwick Ave Display";
+  font-family: 'Poppins', sans-serif;
 }
 
 .navbar-nav .nav-link {
   color: rgb(0, 0, 0) !important;
-  font-family: "Lobster", cursive;
+  font-family: 'Poppins', sans-serif;
 }
 
 .navbar-nav .nav-link:hover {
@@ -111,7 +126,7 @@ body {
 }
 
 .text-center {
-  font-family: "Whisper", cursive;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {

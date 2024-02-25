@@ -83,47 +83,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="./catalogue.php">PHP</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="./catalogue.php">Accueil <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./basket.php">Basket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./veste.php">Vestes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./pantalon.php">Pantalon</a>
-                </li>
-                <li class="nav-item">
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0 ml-auto">
-                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-            </form>
-            <a href="./panier.php" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
-            <?php
-            if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-                $user_id = $_SESSION['user_id'];
-                $sql_check_admin = "SELECT est_admin FROM utilisateurs WHERE id_utilisateur = ? AND est_admin = 1";
-                $stmt_check_admin = $conn->prepare($sql_check_admin);
-                $stmt_check_admin->bind_param("i", $user_id);
-                $stmt_check_admin->execute();
-                $result_check_admin = $stmt_check_admin->get_result();
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="./catalogue.php">PHP</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto" style="font-size: 20px;">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./catalogue.php">Accueil <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./profil.php">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./basket.php">Basket</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./veste.php">Vestes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./pantalon.php">Pantalon</a>
+                    </li>
+                    <?php
+                    if (isset($_SESSION['user_id'])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
+                    } else {
+                        echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
+                    }
 
-                if ($result_check_admin->num_rows > 0) {
-                    echo '<a href="./admin.php" class="btn btn-success ml-2">Admin</a>';
+                    ?>
+                </ul>
+                <?php
+                if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+                    $user_id = $_SESSION['user_id'];
+                    $sql_check_admin = "SELECT est_admin FROM utilisateurs WHERE id_utilisateur = ? AND est_admin = 1";
+                    $stmt_check_admin = $conn->prepare($sql_check_admin);
+                    $stmt_check_admin->bind_param("i", $user_id);
+                    $stmt_check_admin->execute();
+                    $result_check_admin = $stmt_check_admin->get_result();
+
+                    if ($result_check_admin->num_rows > 0) {
+                        echo '<a href="./admin.php" class="btn btn-success ml-2">Admin</a>';
+                    }
                 }
-            }
-            ?>
+                ?>
+            </div>
         </div>
     </nav>
 

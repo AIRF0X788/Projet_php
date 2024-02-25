@@ -10,6 +10,42 @@
 </head>
 
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="./catalogue.php">PHP</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto" style="font-size: 20px;">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./catalogue.php">Accueil <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./profil.php">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./basket.php">Basket</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./veste.php">Vestes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./pantalon.php">Pantalon</a>
+                    </li>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
+                } else {
+                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
+                }
+
+                ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="container">
         <?php
