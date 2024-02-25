@@ -144,6 +144,7 @@ $result = $conn->query($sql);
 
                 if ($user['statut'] == 'actif') {
                     echo '<a href="ajouter_panier_basket.php?id=' . $row['id_basket'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    echo '<a href="ajouter_wish_basket.php?id=' . $row['id_basket'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter a la wishlist</a>';
                 } else {
                     echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                 }

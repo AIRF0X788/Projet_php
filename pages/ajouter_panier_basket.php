@@ -65,4 +65,4 @@ if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
 } else {
     echo 'Erreur : Utilisateur non connecté ou ID du produit manquant.';
 }
-?>
+

@@ -21,6 +21,7 @@ if ($conn->connect_error) {
 
 $success_username = $success_email = $success_password = "";
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['change_username'])) {
         $new_username = $_POST['new_username'];
@@ -57,7 +58,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Erreur lors de la mise à jour du mot de passe : " . $stmt->error;
         }
     }
-}
+
+    if (isset($_POST['exchange_points'])) {
+        $recompense_id = isset($_POST['recompense_id']) ? $_POST['recompense_id'] : null;
+        $points_necessaires = 100;
+    
+        $stmt_attribuer_recompense = null;
+    
+        if ($recompense_id !== null) {
+            $sql_recompense = "SELECT points_necessaires FROM recompenses WHERE id_recompense = ?";
+            $stmt_recompense = $conn->prepare($sql_recompense);
+    
+            if ($stmt_recompense) {
+                $stmt_recompense->bind_param("i", $recompense_id);
+                $stmt_recompense->execute();
+                $result_recompense = $stmt_recompense->get_result();
+    
+                if ($result_recompense->num_rows > 0) {
+                    $row_recompense = $result_recompense->fetch_assoc();
+                    $points_necessaires = $row_recompense['points_necessaires'];
+                } else {
+                    echo "Informations sur la récompense non trouvées.";
+                }
+    
+                // Vérifiez si l'utilisateur a suffisamment de points
+                if ($points_fidelite >= $points_necessaires) {
+                    $sql_update_points = "UPDATE utilisateurs SET points_fidelite = points_fidelite - ? WHERE id_utilisateur = ?";
+                    $stmt_update_points = $conn->prepare($sql_update_points);
+    
+                    if ($stmt_update_points) {
+                        $stmt_update_points->bind_param("ii", $points_necessaires, $user_id);
+    
+                        if ($stmt_update_points->execute()) {
+                            // Récupérer les informations sur la récompense
+                            $sql_recompense_info = "SELECT nom, description FROM recompenses WHERE id_recompense = ?";
+                            $stmt_recompense_info = $conn->prepare($sql_recompense_info);
+    
+                            if ($stmt_recompense_info) {
+                                $stmt_recompense_info->bind_param("i", $recompense_id);
+                                $stmt_recompense_info->execute();
+                                $result_recompense_info = $stmt_recompense_info->get_result();
+    
+                                if ($result_recompense_info->num_rows > 0) {
+                                    $row_recompense_info = $result_recompense_info->fetch_assoc();
+                                    $nom_recompense = $row_recompense_info['nom'];
+                                    $description_recompense = $row_recompense_info['description'];
+    
+                                    // Attribuer la récompense à l'utilisateur
+                                    $sql_attribuer_recompense = "INSERT INTO recompenses_utilisateurs (id_utilisateur, id_recompense, date_attribution) VALUES (?, ?, NOW())";
+                                    $stmt_attribuer_recompense = $conn->prepare($sql_attribuer_recompense);
+    
+                                    if ($stmt_attribuer_recompense) {
+                                        $stmt_attribuer_recompense->bind_param("ii", $user_id, $recompense_id);
+    
+                                        if ($stmt_attribuer_recompense->execute()) {
+                                            echo "Échange réussi. Vous avez obtenu la récompense : $nom_recompense - $description_recompense!";
+                                        } else {
+                                            echo "Erreur lors de l'attribution de la récompense : " . $stmt_attribuer_recompense->error;
+                                        }
+                                    } else {
+                                        echo "Erreur lors de la préparation de la requête d'attribution de récompense : " . $conn->error;
+                                    }
+                                } else {
+                                    echo "Informations sur la récompense non trouvées.";
+                                }
+                            } else {
+                                echo "Erreur lors de la préparation de la requête d'informations sur la récompense : " . $conn->error;
+                            }
+                        } else {
+                            echo "Erreur lors de la mise à jour des points : " . $stmt_update_points->error;
+                        }
+                    } else {
+                        echo "Erreur lors de la préparation de la requête de mise à jour des points : " . $conn->error;
+                    }
+                } else {
+                    echo "Points insuffisants pour effectuer l'échange.";
+                }
+            } else {
+                echo "Erreur lors de la préparation de la requête de récupération des points nécessaires : " . $conn->error;
+            }
+        } else {
+            echo "Avertissement : Aucun identifiant de récompense fourni.";
+        }
+    }
+}    
+
 
 $sql = "SELECT id_utilisateur, nom_utilisateur, email FROM utilisateurs WHERE id_utilisateur = ?";
 $stmt = $conn->prepare($sql);
@@ -73,6 +158,23 @@ if ($result->num_rows > 0) {
 } else {
     echo "Aucun résultat trouvé pour cet utilisateur.";
 }
+
+$sql_points = "SELECT points_fidelite FROM utilisateurs WHERE id_utilisateur = ?";
+$stmt_points = $conn->prepare($sql_points);
+$stmt_points->bind_param("i", $user_id);
+$stmt_points->execute();
+$result_points = $stmt_points->get_result();
+
+if ($result_points->num_rows > 0) {
+    $row_points = $result_points->fetch_assoc();
+    $points_fidelite = $row_points['points_fidelite'];
+} else {
+    $points_fidelite = 10;
+}
+
+$sql_recompenses = "SELECT id_recompense, nom, description, points_necessaires FROM recompenses";
+$result_recompenses = $conn->query($sql_recompenses);
+
 
 $conn->close();
 ?>
@@ -137,18 +239,32 @@ $conn->close();
             <a href="#" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
         </div>
     </nav>
-    <div class="container mt-5">
+    <div class="container mt-3">
         <h2>Profil de <?php echo $nom_utilisateur; ?></h2>
         <p><strong>ID Utilisateur:</strong> <?php echo $user_id; ?></p>
         <p><strong>Nom d'utilisateur:</strong> <?php echo $nom_utilisateur; ?></p>
         <p><strong>Email:</strong> <?php echo $email; ?></p><br><br>
 
-        <div class="mb-4">
+        <div class="mb-3">
             <button class="btn btn-primary" onclick="showForm('usernameForm')">Changer le nom d'utilisateur</button>
             <button class="btn btn-primary" onclick="showForm('emailForm')">Changer l'adresse e-mail</button>
             <button class="btn btn-primary" onclick="showForm('passwordForm')">Changer le mot de passe</button>
         </div>
 
+        <p><strong>Points de fidélité :</strong> <?php echo $points_fidelite; ?> points</p>
+
+        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+            <label for="recompense_id">Échanger des points fidélité contre une récompense :</label>
+            <select name="recompense_id" id="recompense_id">
+                <?php
+                while ($row_recompense = $result_recompenses->fetch_assoc()) {
+                    echo "<option value='" . $row_recompense['id_recompense'] . "'>" . $row_recompense['nom'] . " - " . $row_recompense['points_necessaires'] . " points</option>";
+                }
+                ?>
+            </select>
+            <button type="submit" name="exchange_points" class="btn btn-primary">Échanger des points</button>
+        </form>
+        
         <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="usernameForm" style="display:none;">
             <label for="new_username">Changer le nom d'utilisateur:</label>
             <input type="text" name="new_username" id="new_username" required>

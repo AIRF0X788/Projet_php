@@ -48,7 +48,7 @@ if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
             $stmtInsert->bind_param("iisssd", $user_id, $produit_id, $produit['image_url'], $produit['nom'], $produit['description'], $produit['prix']);
             $stmtInsert->execute();
             header("Location: ./panier.php");
-            exit();  // Assurez-vous d'arrêter l'exécution du script après la redirection
+            exit();  
         }
     } else {
         echo 'Le produit n\'existe pas.';
@@ -58,4 +58,4 @@ if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
 } else {
     echo 'Erreur : Utilisateur non connecté ou ID du produit manquant.';
 }
-?>
+

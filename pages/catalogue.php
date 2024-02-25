@@ -217,6 +217,7 @@ if ($conn->connect_error) {
                     $add_to_cart_href = isset($row['id_pantalon']) ? 'ajouter_panier_pantalon.php' : (isset($row['id_veste']) ? 'ajouter_panier_veste.php' : (isset($row['id_basket']) ? 'ajouter_panier_basket.php' : 'ajouter_panier_catalogue.php'));
         
                     echo '<a href="' . $add_to_cart_href . '?id=' . $id_for_cart . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
+                    
                 } else {
                     echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                 }

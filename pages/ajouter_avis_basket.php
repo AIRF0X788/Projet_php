@@ -47,7 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Erreur lors de la mise à jour de l'avis : " . $update_review_stmt->error;
         }
     } else {
-        // Ajout de la date actuelle
         $date_avis = date('Y-m-d H:i:s');
 
         $insert_stmt = $conn->prepare("INSERT INTO avis_basket (id_utilisateur, id_produit, commentaire, note, nom_utilisateur, date_avis) VALUES (?, ?, ?, ?, ?, ?)");
@@ -72,4 +71,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: login.php");
     exit();
 }
-?>
+
