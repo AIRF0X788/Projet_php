@@ -172,6 +172,10 @@ if ($result_points->num_rows > 0) {
     $points_fidelite = 10;
 }
 
+<<<<<<< HEAD
+=======
+// Récupérer les récompenses disponibles
+>>>>>>> 845906533120dbf5143377ccc918572f313703d0
 $sql_recompenses = "SELECT id_recompense, nom, description, points_necessaires FROM recompenses";
 $result_recompenses = $conn->query($sql_recompenses);
 
