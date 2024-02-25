@@ -27,6 +27,16 @@ CREATE TABLE IF NOT EXISTS panier_utilisateur (
     prix_produit DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
 );
+CREATE TABLE IF NOT EXISTS wish_utilisateur (
+    id_utilisateur_panier INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    id_produit INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    nom_produit VARCHAR(100) NOT NULL,
+    description_produit TEXT,
+    prix_produit DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur)
+);
 CREATE TABLE IF NOT EXISTS commandes (
     id_commande INT AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur INT,

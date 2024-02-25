@@ -72,4 +72,3 @@ try {
     header("Location: cancel.php");
     exit;
 }
-?>

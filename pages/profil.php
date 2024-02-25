@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "Informations sur la récompense non trouvées.";
                 }
     
-                // Vérifiez si l'utilisateur a suffisamment de points
+
                 if ($points_fidelite >= $points_necessaires) {
                     $sql_update_points = "UPDATE utilisateurs SET points_fidelite = points_fidelite - ? WHERE id_utilisateur = ?";
                     $stmt_update_points = $conn->prepare($sql_update_points);
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $stmt_update_points->bind_param("ii", $points_necessaires, $user_id);
     
                         if ($stmt_update_points->execute()) {
-                            // Récupérer les informations sur la récompense
+
                             $sql_recompense_info = "SELECT nom, description FROM recompenses WHERE id_recompense = ?";
                             $stmt_recompense_info = $conn->prepare($sql_recompense_info);
     
@@ -104,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     $nom_recompense = $row_recompense_info['nom'];
                                     $description_recompense = $row_recompense_info['description'];
     
-                                    // Attribuer la récompense à l'utilisateur
+
                                     $sql_attribuer_recompense = "INSERT INTO recompenses_utilisateurs (id_utilisateur, id_recompense, date_attribution) VALUES (?, ?, NOW())";
                                     $stmt_attribuer_recompense = $conn->prepare($sql_attribuer_recompense);
     
@@ -172,7 +172,6 @@ if ($result_points->num_rows > 0) {
     $points_fidelite = 10;
 }
 
-// Récupérer les récompenses disponibles
 $sql_recompenses = "SELECT id_recompense, nom, description, points_necessaires FROM recompenses";
 $result_recompenses = $conn->query($sql_recompenses);
 

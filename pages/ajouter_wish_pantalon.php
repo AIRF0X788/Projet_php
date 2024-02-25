@@ -29,7 +29,7 @@ if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
 
     if ($produit) {
        
-        $sqlCheck = "SELECT * FROM panier_utilisateur WHERE id_utilisateur = ? AND id_produit = ?";
+        $sqlCheck = "SELECT * FROM wish_utilisateur WHERE id_utilisateur = ? AND id_produit = ?";
         $stmtCheck = $conn->prepare($sqlCheck);
         $stmtCheck->bind_param("ii", $user_id, $produit_id);
         $stmtCheck->execute();
@@ -38,21 +38,20 @@ if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
 
         if ($existingProduit) {
             
-            $newQuantite = $existingProduit['quantite'] + 1;
             $newPrix = $existingProduit['prix_produit'] + $produit['prix'];
-            $sqlUpdate = "UPDATE panier_utilisateur SET quantite = ?, prix_produit = ? WHERE id_utilisateur = ? AND id_produit = ?";
+            $sqlUpdate = "UPDATE wish_utilisateur SET prix_produit = ? WHERE id_utilisateur = ? AND id_produit = ?";
             $stmtUpdate = $conn->prepare($sqlUpdate);
             $stmtUpdate->bind_param("idii", $newQuantite, $newPrix, $user_id, $produit_id);
             $stmtUpdate->execute();
-            header("Location: ./panier.php");
+            header("Location: ./wish.php");
         } else {
             
-            $sqlInsert = "INSERT INTO panier_utilisateur (id_utilisateur, id_produit, quantite, image_url, nom_produit, description_produit, prix_produit)
-                          VALUES (?, ?, 1, ?, ?, ?, ?)";
+            $sqlInsert = "INSERT INTO wish_utilisateur (id_utilisateur, id_produit, image_url, nom_produit, description_produit, prix_produit)
+                          VALUES (?, ?, ?, ?, ?, ?)";
             $stmtInsert = $conn->prepare($sqlInsert);
             $stmtInsert->bind_param("iisssd", $user_id, $produit_id, $produit['image_url'], $produit['nom'], $produit['description'], $produit['prix']);
             $stmtInsert->execute();
-            header("Location: ./panier.php");
+            header("Location: ./wish.php");
             exit();
         }
     } else {
