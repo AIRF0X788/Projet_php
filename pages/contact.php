@@ -66,14 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <li class="nav-item">
                         <a class="nav-link" href="./pantalon.php">Pantalon</a>
                     </li>
-                    <?php
-                    if (isset($_SESSION['user_id'])) {
-                        echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
-                    } else {
-                        echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
-                    }
-
-                    ?>
                 </ul>
                 <?php
                 if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {

@@ -32,13 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $existing_review_stmt = $conn->prepare("SELECT id_avis FROM avis_pantalon WHERE id_utilisateur = ? AND id_produit = ?");
+    $existing_review_stmt = $conn->prepare("SELECT id_avis FROM avis_veste WHERE id_utilisateur = ? AND id_produit = ?");
     $existing_review_stmt->bind_param("ii", $id_utilisateur, $product_id);
     $existing_review_stmt->execute();
     $existing_review_result = $existing_review_stmt->get_result();
 
     if ($existing_review_result->num_rows > 0) {
-        $update_review_stmt = $conn->prepare("UPDATE avis_pantalon SET commentaire = ?, note = ? WHERE id_utilisateur = ? AND id_produit = ?");
+        $update_review_stmt = $conn->prepare("UPDATE avis_veste SET commentaire = ?, note = ? WHERE id_utilisateur = ? AND id_produit = ?");
         $update_review_stmt->bind_param("sdsi", $commentaire, $note, $id_utilisateur, $product_id);
 
         if ($update_review_stmt->execute()) {
@@ -49,11 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $date_avis = date('Y-m-d H:i:s');
 
-        $insert_stmt = $conn->prepare("INSERT INTO avis_pantalon (id_utilisateur, id_produit, commentaire, note, nom_utilisateur, date_avis) VALUES (?, ?, ?, ?, ?, ?)");
+        $insert_stmt = $conn->prepare("INSERT INTO avis_veste (id_utilisateur, id_produit, commentaire, note, nom_utilisateur, date_avis) VALUES (?, ?, ?, ?, ?, ?)");
         $insert_stmt->bind_param("iisdss", $id_utilisateur, $product_id, $commentaire, $note, $nom_utilisateur, $date_avis);
 
         if ($insert_stmt->execute()) {
-            $update_average_rating_stmt = $conn->prepare("UPDATE pantalon SET note_moyenne = (SELECT AVG(note) FROM avis_pantalon WHERE id_produit = ?) WHERE id_pantalon = ?");
+            $update_average_rating_stmt = $conn->prepare("UPDATE veste SET note_moyenne = (SELECT AVG(note) FROM avis_veste WHERE id_produit = ?) WHERE id_veste = ?");
             $update_average_rating_stmt->bind_param("ii", $product_id, $product_id);
 
             if ($update_average_rating_stmt->execute()) {
@@ -100,3 +100,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
+

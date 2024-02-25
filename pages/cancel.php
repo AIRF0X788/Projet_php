@@ -3,48 +3,30 @@ echo 'Paiement annulé. Vous serez redirigé vers la page d\'accueil dans quelqu
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirection en cours...</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    
-    <style>
-        #loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-            text-align: center;
-            padding-top: 20%;
-        }
-
-        #loading img {
-            width: 50px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-
 <body>
-    <div id="loading">
-        <img src="../image/Loading.gif" alt="Chargement en cours...">
-        <p>Redirection en cours...</p>
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="text-center">
+        <h1 class="font-weight-bold display-4"><?php echo $message; ?></h1>
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <p class="mt-3">Redirection en cours...</p>
     </div>
+</div>
 
-    <script>
-        $(document).ready(function () {
-            $('#loading').show();
-        });
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    setTimeout(function () {
+        window.location.href = 'catalogue.php';
+    }, 5000);
+</script>
 
-        setTimeout(function () {
-            window.location.href = 'catalogue.php';
-        }, 10000); 
-    </script>
 </body>
-
 </html>

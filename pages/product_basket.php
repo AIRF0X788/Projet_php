@@ -1,3 +1,27 @@
+<?php
+session_start();
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "dbphp";
+
+$conn = new mysqli($servername, $username, $password, $database);
+
+if ($conn->connect_error) {
+    die("La connexion à la base de données a échoué : " . $conn->connect_error);
+}
+
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $panier_url = "./panier.php";
+    $wish_url = "./wish.php";
+} else {
+    $panier_url = "./panier.php";
+    $wish_url = "./wish.php";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,10 +31,11 @@
     <title>Détails du Produit</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/page_product.css">
+    <link rel="stylesheet" href="../css/loading.css">
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="./catalogue.php">PHP</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -34,34 +59,27 @@
                     <li class="nav-item">
                         <a class="nav-link" href="./pantalon.php">Pantalon</a>
                     </li>
+                </ul>
                 <?php
                 if (isset($_SESSION['user_id'])) {
-                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
+                    echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist <span class="badge badge-light"></span></a>';
                 } else {
-                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
+                    echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist</a>';
                 }
-
                 ?>
-                </ul>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                    echo '<a href="' . $panier_url . '" class="btn btn-dark ml-2">Mon Panier <span class="badge badge-light"></span></a>';
+                } else {
+                    echo '<a href="' . $panier_url . '" class="btn btn-dark ml-2">Mon Panier</a>';
+                }
+                ?>
             </div>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="mt-5 container">
         <?php
-        session_start();
-
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $database = "dbphp";
-
-        $conn = new mysqli($servername, $username, $password, $database);
-
-        if ($conn->connect_error) {
-            die("La connexion à la base de données a échoué : " . $conn->connect_error);
-        }
-
         if (isset($_GET['id'])) {
             $product_id = $_GET['id'];
 
@@ -77,11 +95,11 @@
                 echo "<p>Description: " . $product['description'] . "</p>";
                 echo "<p>Prix: $" . number_format($product['prix'], 2) . "</p>";
 
-           
+
                 echo "<div class='avis-section'>";
                 echo "<h2>Avis</h2>";
 
-              
+
                 $avis_stmt = $conn->prepare("SELECT * FROM avis_basket WHERE id_produit = ?");
                 $avis_stmt->bind_param("i", $product_id);
                 $avis_stmt->execute();
@@ -91,15 +109,19 @@
                     echo "<p><strong>" . $avis['nom_utilisateur'] . " : </strong> " . $avis['commentaire'] . " (Note: " . $avis['note'] . "/5, Date: " . $avis['date_avis'] . ")</p>";
                 }
 
-               
-                echo "<h3>Ajouter un avis</h3>";
+
+                echo "<h3 class='mt-5'>Ajouter un avis</h3>";
                 echo "<form action='ajouter_avis_basket.php' method='post'>";
                 echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
+                echo "<div class='form-group'>";
                 echo "<label for='commentaire'>Commentaire:</label>";
-                echo "<textarea name='commentaire' id='commentaire' rows='4' required></textarea>";
+                echo "<textarea class='form-control' name='commentaire' id='commentaire' rows='4' required></textarea>";
+                echo "</div>";
+                echo "<div class='form-group'>";
                 echo "<label for='note'>Note (sur 5):</label>";
-                echo "<input type='number' name='note' id='note' min='1' max='5' required>";
-                echo "<button type='submit'>Ajouter l'avis</button>";
+                echo "<input type='number' class='form-control' name='note' id='note' min='1' max='5' required>";
+                echo "</div>";
+                echo "<button type='submit' class='btn btn-primary'>Ajouter l'avis</button>";
                 echo "</form>";
 
                 echo "</div>";
@@ -113,7 +135,15 @@
         $conn->close();
         ?>
     </div>
+    <div class="mb-5"></div>
+    <footer>
+        © 2023 PHP Site Web
+        <a href="contact.php" class="btn btn-primary">Nous contacter</a>
+    </footer>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

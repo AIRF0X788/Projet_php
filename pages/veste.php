@@ -6,10 +6,12 @@ if (isset($_SESSION['user_id'])) {
     $connectButtonText = 'Se déconnecter';
     $loginPage = './logout.php';
     $panier_url = "./panier.php";
+    $wish_url = "./wish.php";
 } else {
     $connectButtonText = 'Se connecter';
     $loginPage = './login.php';
     $panier_url = "./panier.php";
+    $wish_url = "./wish.php";
 }
 
 $servername = "localhost";
@@ -94,6 +96,13 @@ $result = $conn->query($sql);
                 </ul>
                 <?php
                 if (isset($_SESSION['user_id'])) {
+                    echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist <span class="badge badge-light"></span></a>';
+                } else {
+                    echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist</a>';
+                }
+                ?>
+                <?php
+                if (isset($_SESSION['user_id'])) {
                     echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>';
                 } else {
                     echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
@@ -158,8 +167,8 @@ $result = $conn->query($sql);
                     $user = $result_user->fetch_assoc();
 
                     if ($user['statut'] == 'actif') {
-                        echo '<a href="ajouter_panier_veste.php?id=' . $row['id_veste'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter au Panier</a>';
-                        echo '<a href="ajouter_wish_veste.php?id=' . $row['id_veste'] . '&user_id=' . $user_id . '" class="btn btn-success">Ajouter a la wishlist</a>';
+                        echo '<a href="ajouter_panier_veste.php?id=' . $row['id_veste'] . '&user_id=' . $user_id . '" class="mx-4 btn btn-success">Ajouter au Panier</a>';
+                        echo '<a href="ajouter_wish_veste.php?id=' . $row['id_veste'] . '&user_id=' . $user_id . '" class="btn btn-info">Ajouter a la wishlist</a>';
                     } else {
                         echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
                     }

@@ -20,51 +20,54 @@ $apiContext = new ApiContext(
 
 $apiContext->setConfig(['mode' => 'sandbox']);
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
 $totalPrice = $_POST['total_price'];
 $id_utilisateur = $_SESSION['user_id'];
 
+$payer = new Payer();
+$payer->setPaymentMethod('paypal');
+
+$amount = new Amount();
+$amount->setTotal($totalPrice);
+$amount->setCurrency('USD');
+
+$transaction = new Transaction();
+$transaction->setAmount($amount);
+
+$redirectUrls = new RedirectUrls();
+$redirectUrls->setReturnUrl('http://localhost/xampp/vrai%20php/pages/success.php')
+    ->setCancelUrl('http://localhost/xampp/vrai%20php/pages/cancel.php');
+
+$payment = new Payment();
+$payment->setIntent('sale')
+    ->setPayer($payer)
+    ->setTransactions([$transaction])
+    ->setRedirectUrls($redirectUrls);
+
 try {
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $database = "dbphp";
+    $conn = new mysqli($servername, $username, $password, $database);
+
+    if ($conn->connect_error) {
+        die("Erreur de connexion à la base de données: " . $conn->connect_error);
+    }
+
     $date_commande = date('Y-m-d H:i:s');
-    $conn = new PDO("mysql:host=localhost;dbname=dbphp", "root", "");
-    $stmt = $conn->prepare("INSERT INTO commandes (id_utilisateur, date_commande, total) VALUES (:id_utilisateur, :date_commande, :total)");
-    $stmt->bindParam(':id_utilisateur', $id_utilisateur);
-    $stmt->bindParam(':date_commande', $date_commande);
-    $stmt->bindParam(':total', $totalPrice);
-    $stmt->execute();
+    $stmt = $conn->prepare("INSERT INTO commandes (id_utilisateur, date_commande, prix) VALUES (?, ?, ?)");
 
-    $points_gagnes = floor($totalPrice / 10);
-    $stmt_update = $conn->prepare("UPDATE utilisateurs SET points_fidelite = points_fidelite + :points_gagnes WHERE id_utilisateur = :id_utilisateur");
-    $stmt_update->bindParam(':points_gagnes', $points_gagnes);
-    $stmt_update->bindParam(':id_utilisateur', $id_utilisateur);
-    $stmt_update->execute();
+    if (!$stmt) {
+        die("Erreur de préparation de la requête SQL : " . $conn->error);
+    }
 
-    $payer = new Payer();
-    $payer->setPaymentMethod('paypal');
+    $stmt->bind_param('iss', $id_utilisateur, $date_commande, $totalPrice);
 
-    $amount = new Amount();
-    $amount->setTotal($totalPrice);
-    $amount->setCurrency('EUR');
-
-    $transaction = new Transaction();
-    $transaction->setAmount($amount);
-
-    $redirectUrls = new RedirectUrls();
-    $redirectUrls->setReturnUrl('http://localhost/xampp/vrai%20php/pages/success.php')
-        ->setCancelUrl('http://localhost/xampp/vrai%20php/pages/cancel.php');
-
-    $payment = new Payment();
-    $payment->setIntent('sale')
-        ->setPayer($payer)
-        ->setTransactions([$transaction])
-        ->setRedirectUrls($redirectUrls);
+    if (!$stmt->execute()) {
+        die("Erreur lors de l'exécution de la requête SQL : " . $stmt->error);
+    }
 
     $payment->create($apiContext);
-
     header('Location: ' . $payment->getApprovalLink());
     exit;
 } catch (Exception $ex) {

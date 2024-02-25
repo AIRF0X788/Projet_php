@@ -6,6 +6,14 @@ if (empty($_SESSION['user_id'])) {
     exit();
 }
 
+if (isset($_SESSION['user_id'])) {
+    $panier_url = "./panier.php";
+    $wish_url = "./wish.php";
+} else {
+    $panier_url = "./panier.php";
+    $wish_url = "./wish.php";
+}
+
 $user_id = $_SESSION['user_id'];
 
 $servername = "localhost";
@@ -236,7 +244,20 @@ $conn->close();
 
                     ?>
                 </ul>
-            <a href="#" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                    echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist <span class="badge badge-light"></span></a>';
+                } else {
+                    echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist</a>';
+                }
+                ?>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier <span class="badge badge-light"></span></a>';
+                } else {
+                    echo '<a href="' . $panier_url . '" class="btn btn-primary ml-2">Mon Panier</a>';
+                }
+                ?>
         </div>
     </nav>
     <div class="container mt-3">

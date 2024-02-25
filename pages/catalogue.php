@@ -3,7 +3,7 @@ session_start();
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    $connectButtonText = 'Se déconnecter';
+    $connectButtonText = 'Se Déconnecter';
     $loginPage = './logout.php';
     $panier_url = "./panier.php";
     $wish_url = "./wish.php";
@@ -13,6 +13,7 @@ if (isset($_SESSION['user_id'])) {
     $panier_url = "./panier.php";
     $wish_url = "./wish.php";
 }
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -24,21 +25,16 @@ if ($conn->connect_error) {
     die("La connexion à la base de données a échoué : " . $conn->connect_error);
 }
 
-$filter_category = isset($_GET['category']) ? $_GET['category'] : '';
-
-$sql = "SELECT id_basket, nom, description, prix, image_url, category FROM basket";
-if (!empty($filter_category)) {
-    $sql .= " WHERE category = '$filter_category'";
-}
-$result = $conn->query($sql);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,9 +53,49 @@ $result = $conn->query($sql);
     <link
         href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Permanent+Marker&family=Whisper&display=swap"
         rel="stylesheet">
-    <title>Basket</title>
-</head>
+    <title>Accueil</title>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            <?php
+            if (isset($_SESSION['popup_shown']) && $_SESSION['popup_shown']) {
+                if (isset($_COOKIE['user_name_cookie'])) {
+                    $user_name = $_COOKIE['user_name_cookie'];
+
+                    echo "Swal.fire({
+                    title: 'Félicitations!',
+                    text: 'Connexion réussie. Bienvenue sur notre site, $user_name !',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'GET',
+                            url: './récupérer_code_promos.php', // Endpoint pour récupérer le code promo
+                            success: function(response) { 
+                                Swal.fire({
+                                    title: 'Code Promo',
+                                    html: '-10% sur ta prochaine commande !<br>Avec le code : ' + response,
+                                    icon: 'info',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    setTimeout(function() {
+                                        location.replace('" . $_SERVER['PHP_SELF'] . "');
+                                    }, 2000);
+                                });
+                            }
+                        });
+                    }
+                });";
+                }
+
+                $_SESSION['popup_shown'] = false;
+            }
+            ?>
+        });
+    </script>
+
+</head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -85,14 +121,14 @@ $result = $conn->query($sql);
                     <li class="nav-item">
                         <a class="nav-link" href="./pantalon.php">Pantalon</a>
                     </li>
-                <?php
-                if (isset($_SESSION['user_id'])) {
-                    echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
-                } else {
-                    echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
-                }
+                    <?php
+                    if (isset($_SESSION['user_id'])) {
+                        echo '<li class="nav-item"><a class="nav-link" href="./logout.php">Se déconnecter</a></li>';
+                    } else {
+                        echo '<li class="nav-item"><a class="nav-link" href="./login.php">Se connecter</a></li>';
+                    }
 
-                ?>
+                    ?>
                 </ul>
                 <?php
                 if (isset($_SESSION['user_id'])) {
@@ -125,7 +161,7 @@ $result = $conn->query($sql);
             </div>
         </div>
     </nav>
-    <h2 class="text-center mt-4">Les Baskets</h2>
+    <h2 class="text-center mt-4">Les Nouveautés</h2>
     
     <form method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <div class="ml-5 input-group">
@@ -145,45 +181,90 @@ $result = $conn->query($sql);
         </form>
 
     <?php
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo '<div class="card">';
-            echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
-            echo '<div class="container">';
-            echo '<h4><b>' . $row['nom'] . '</b></h4>';
-            echo '<p class="category">' . $row['category'] . '</p>';
-            echo '<p>' . $row['description'] . '</p>';
-            echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
-            echo '<a href="product_basket.php?id=' . $row['id_basket'] . '" class="btn btn-primary">Voir Détails</a>';
 
-            if (isset($user_id)) {
-                $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
-                $stmt_user = $conn->prepare($sql_user);
-                $stmt_user->bind_param("i", $user_id);
-                $stmt_user->execute();
-                $result_user = $stmt_user->get_result();
-                $user = $result_user->fetch_assoc();
+    $filter_category = isset($_GET['category']) ? $_GET['category'] : '';
+    $search_term = isset($_GET['search_term']) ? strtolower($_GET['search_term']) : '';
+    $is_veste_search = isset($_GET['is_veste_search']) ? $_GET['is_veste_search'] : '';
+    $is_pantalon_search = isset($_GET['is_pantalon_search']) ? $_GET['is_pantalon_search'] : '';
+    $is_basket_search = isset($_GET['is_basket_search']) ? $_GET['is_basket_search'] : '';
 
-                if ($user['statut'] == 'actif') {
-                    echo '<a href="ajouter_panier_basket.php?id=' . $row['id_basket'] . '&user_id=' . $user_id . '" class="mx-4 btn btn-success">Ajouter au Panier</a>';
-                    echo '<a href="ajouter_wish_basket.php?id=' . $row['id_basket'] . '&user_id=' . $user_id . '" class="btn btn-info">Ajouter a la wishlist</a>';
-                } else {
-                    echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
-                }
-            } else {
-                echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
-            }
 
-            echo '</div>';
-            echo '</div>';
-        }
-    } else {
-        echo "Aucun résultat trouvé";
+    $sql = "SELECT id_produit, nom, description, prix, image_url, category FROM produits";
+
+
+    if (!empty($filter_category)) {
+        $sql .= " WHERE category = ?";
     }
 
 
+    if ($is_veste_search == '2' && strpos($search_term, 've') !== false) {
+        $sql = "SELECT id_veste, nom, description, prix, image_url, category FROM veste WHERE nom LIKE '%$search_term%'";
+    } elseif ($is_pantalon_search == '1' && strpos($search_term, 'pa') !== false) {
+        $sql = "SELECT id_pantalon, nom, description, prix, image_url, category FROM pantalon WHERE nom LIKE '%$search_term%'";
+    } elseif ($is_basket_search == '3' && strpos($search_term, 'ba') !== false) {
+        $sql = "SELECT id_basket, nom, description, prix, image_url, category FROM basket WHERE nom LIKE '%$search_term%'";
+    }
+
+    $stmt = $conn->prepare($sql);
+
+
+    if (!empty($filter_category)) {
+        $stmt->bind_param("s", $filter_category);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        echo '<div class="card">';
+        echo '<img src="' . $row['image_url'] . '" alt="' . $row['nom'] . '" style="width:100%">';
+        echo '<div class="container">';
+        echo '<h4><b>' . $row['nom'] . '</b></h4>';
+        echo '<p class="category">' . $row['category'] . '</p>';
+        echo '<p>' . $row['description'] . '</p>';
+        echo '<p>Prix : $' . number_format($row['prix'], 2) . '</p>';
+
+
+        if (isset($row['id_pantalon'])) {
+            echo '<a href="product_pantalon.php?id=' . $row['id_pantalon'] . '" class="btn btn-primary">Voir Détails</a>';
+        } elseif (isset($row['id_veste'])) {
+            echo '<a href="product_veste.php?id=' . $row['id_veste'] . '" class="btn btn-primary">Voir Détails</a>';
+        } elseif (isset($row['id_basket'])) {
+            echo '<a href="product_basket.php?id=' . $row['id_basket'] . '" class="btn btn-primary">Voir Détails</a>';
+        } else {
+            echo '<a href="product_catalogue.php?id=' . $row['id_produit'] . '" class="btn btn-primary">Voir Détails</a>';
+        }
+
+
+        if (isset($user_id)) {
+            $sql_user = "SELECT statut FROM utilisateurs WHERE id_utilisateur = ?";
+            $stmt_user = $conn->prepare($sql_user);
+            $stmt_user->bind_param("i", $user_id);
+            $stmt_user->execute();
+            $result_user = $stmt_user->get_result();
+            $user = $result_user->fetch_assoc();
+
+            if ($user['statut'] == 'actif') {
+                $id_for_cart = isset($row['id_pantalon']) ? $row['id_pantalon'] : (isset($row['id_veste']) ? $row['id_veste'] : (isset($row['id_basket']) ? $row['id_basket'] : $row['id_produit']));
+                $add_to_cart_href = isset($row['id_pantalon']) ? 'ajouter_panier_pantalon.php' : (isset($row['id_veste']) ? 'ajouter_panier_veste.php' : (isset($row['id_basket']) ? 'ajouter_panier_basket.php' : 'ajouter_panier_catalogue.php'));
+
+                echo '<a href="' . $add_to_cart_href . '?id=' . $id_for_cart . '&user_id=' . $user_id . '" class="mx-4 btn btn-success">Ajouter au Panier</a>';
+            } else {
+                echo '<a href="#" class="btn btn-success">Votre compte n\'est pas vérifié pour ajouter au panier</a>';
+            }
+        } else {
+            echo '<a href="./login.php" class="btn btn-success">Connexion pour Ajouter au Panier</a>';
+        }
+
+        echo '</div>';
+        echo '</div>';
+    }
+
+    $stmt->close();
     $conn->close();
     ?>
+
+
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
