@@ -8,7 +8,7 @@ Le dossier du projet devrai s'appeler "vrai php" pour que tout fonctionne bien, 
 ## Paiement
 
 Pour utiliser le système de paiement, un compte paypal sandbox doit être utiliser.
-Un compte comme celui ci ; 
+Un compte comme celui ci : 
 email : sb-ndhzc26594807@personal.example.com mdp : 3G@Qd+3K 
 
 ## Config xampp
