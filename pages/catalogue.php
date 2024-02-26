@@ -130,6 +130,13 @@ if ($conn->connect_error) {
 
                     ?>
                 </ul>
+                <form class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search" name="search_term">
+                <input type="hidden" name="is_pantalon_search" value="1">
+                <input type="hidden" name="is_veste_search" value="2">
+                <input type="hidden" name="is_basket_search" value="3">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+            </form>
                 <?php
                 if (isset($_SESSION['user_id'])) {
                     echo '<a href="' . $wish_url . '" class="btn btn-info ml-2">Wishlist <span class="badge badge-light"></span></a>';

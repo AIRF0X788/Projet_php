@@ -67,6 +67,11 @@ try {
         die("Erreur lors de l'exécution de la requête SQL : " . $stmt->error);
     }
 
+    $points_gagnes = floor($totalPrice / 10);
+    $stmt_update = $conn->prepare("UPDATE utilisateurs SET points_fidelite = points_fidelite + ? WHERE id_utilisateur = ?");
+    $stmt_update->bind_param('ii', $points_gagnes, $id_utilisateur);
+    $stmt_update->execute();
+
     $payment->create($apiContext);
     header('Location: ' . $payment->getApprovalLink());
     exit;
