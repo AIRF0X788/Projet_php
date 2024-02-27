@@ -157,7 +157,6 @@ CREATE TABLE IF NOT EXISTS recompenses_utilisateurs (
 CREATE INDEX IF NOT EXISTS idx_email_utilisateur ON utilisateurs (email);
 CREATE INDEX IF NOT EXISTS idx_nom_produit ON produits (nom);
 CREATE INDEX IF NOT EXISTS idx_prix_produit ON produits (prix);
-CREATE INDEX IF NOT EXISTS idx_utilisateur_commande ON commandes (id_utilisateur);
 INSERT INTO codes_promo (code, valeur, actif) VALUES ('Tom', 0.10, 1);
 INSERT INTO codes_promo (code, valeur, actif) VALUES ('Tam', 0.20, 0);
 
@@ -329,10 +328,3 @@ VALUES (
         '../image/basket6.webp',
         'Homme'
     );
-
-INSERT INTO echanges_points (id_utilisateur, id_recompense)
-VALUES (:id_utilisateur, :id_recompense);
-
-UPDATE utilisateurs
-SET points_fidelite = points_fidelite - (SELECT points_necessaires FROM recompenses WHERE id_recompense = :id_recompense)
-WHERE id_utilisateur = :id_utilisateur;
